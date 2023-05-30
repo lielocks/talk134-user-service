@@ -5,14 +5,14 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: User CI/CD
+name: User Service CI/CD
 
 on:
   push:
     branches: [ "main" ]
 env:
-  EC2_HOST: ec2-13-124-211-170.ap-northeast-2.compute.amazonaws.com
-  SERVICE_HOME: ${{ vars.USER_SERVICE_HOME }}
+  EC2_HOST: ${{ secrets.USER_SERVICE_HOME }}
+  SERVICE_HOME: ${{ secrets.GATEWAY_HOME }}
   SCRIPT: shell/user-deploy.sh
   
 permissions:
@@ -36,8 +36,9 @@ jobs:
     - name: Copy jar to EC2
       uses: appleboy/scp-action@master
       with:
-        username: ${{ vars.USER }}
+        username: ${{ secrets.EC2_USERNAME }}
         host: ${{ env.EC2_HOST }}
+        port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.PRIVATE_KEY }}
         source: "./build/libs/*.jar"
         target: ${{ env.SERVICE_HOME }}
@@ -45,16 +46,18 @@ jobs:
     - name: Copy script to EC2
       uses: appleboy/scp-action@master
       with:
-        username: ${{ vars.USER }}
+        username: ${{ secrets.EC2_USERNAME }}
         host: ${{ env.EC2_HOST }}
+        port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.PRIVATE_KEY }}
         source: ${{ env.SCRIPT }}
         target: ${{ env.SERVICE_HOME }}
     - name: Execute Script
       uses: appleboy/ssh-action@master
       with:
-        username: ${{ vars.USER }}
+        username: ${{ secrets.EC2_USERNAME }}
         host: ${{ env.EC2_HOST }}
+        port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.PRIVATE_KEY }}
         script_stop: true
         script: chmod 744 ${{ env.SERVICE_HOME }}/${{ env.SCRIPT }} && ${{ env.SERVICE_HOME }}/${{ env.SCRIPT }}
