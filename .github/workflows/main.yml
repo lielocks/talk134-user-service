@@ -11,8 +11,8 @@ on:
   push:
     branches: [ "main" ]
 env:
-  EC2_HOST: ${{ secrets.USER_SERVICE_HOME }}
-  SERVICE_HOME: ${{ secrets.GATEWAY_HOME }}
+  EC2_HOST: ${{ secrets.CHAT_USER_HOST }}
+  SERVICE_HOME: ${{ secrets.USER_SERVICE_HOME }}
   SCRIPT: shell/user-deploy.sh
   
 permissions:
