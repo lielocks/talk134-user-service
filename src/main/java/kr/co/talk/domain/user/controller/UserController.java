@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -40,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/id/{searchName}")
-    public ResponseDto.UserIdResponseDto getUserIdByName (@PathVariable("searchName") String searchName) {
+    public List<ResponseDto.UserIdResponseDto> getUserIdByName (@PathVariable("searchName") String searchName) {
         return userService.searchUserId(searchName);
     }
 

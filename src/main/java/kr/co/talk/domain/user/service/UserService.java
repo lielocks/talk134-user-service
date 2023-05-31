@@ -8,7 +8,6 @@ import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.domain.user.repository.TeamRepository;
 import kr.co.talk.domain.user.repository.UserRepository;
-import kr.co.talk.global.config.jwt.JwtTokenProvider;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -28,7 +24,6 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public User createUser(SocialKakaoDto.UserInfo userInfoDto) {
@@ -73,16 +68,24 @@ public class UserService {
         }
     }
 
-    public ResponseDto.UserIdResponseDto searchUserId(String searchName) {
-        List<User> user = userRepository.findUserByUserNameOrNickname(searchName);
-        if (user == null) {
+    public List<ResponseDto.UserIdResponseDto> searchUserId(String searchName) {
+        List<User> users = userRepository.findUserByUserNameOrNickname(searchName);
+        List<ResponseDto.UserIdResponseDto> resultList = new ArrayList<>();
+
+        if (users == null || users.isEmpty()) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         } else {
-            ResponseDto.UserIdResponseDto userIdResponseDto= new ResponseDto.UserIdResponseDto();
-            userIdResponseDto.setUserId(user.stream().map(User::getUserId).collect(Collectors.toList()));
-            return userIdResponseDto;
+            for (User user : users) {
+                ResponseDto.UserIdResponseDto userDto = new ResponseDto.UserIdResponseDto();
+                userDto.setUserId(user.getUserId());
+                userDto.setUserName(user.getUserName());
+                resultList.add(userDto);
+            }
         }
+
+        return resultList;
     }
+
 
     public ResponseDto.TeamCodeResponseDto findTeamCode(Long userId) {
         User user = userRepository.findByUserId(userId);
