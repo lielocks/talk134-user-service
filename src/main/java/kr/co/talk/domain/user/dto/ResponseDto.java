@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +22,7 @@ public class ResponseDto {
 
     @Data
     public static class UserIdResponseDto {
-        private List<Long> userId;
+        private Long userId;
+        private String userName;
     }
 }
