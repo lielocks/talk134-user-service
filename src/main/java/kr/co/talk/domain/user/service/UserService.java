@@ -8,7 +8,6 @@ import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.domain.user.repository.TeamRepository;
 import kr.co.talk.domain.user.repository.UserRepository;
-import kr.co.talk.global.config.jwt.JwtTokenProvider;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

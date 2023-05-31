@@ -3,8 +3,6 @@ package kr.co.talk.domain.user.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
