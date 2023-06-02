@@ -37,6 +37,12 @@ public class SocialKakaoService {
     @Value("${kakao.url.profile}")
     private String profileUrl;
 
+    @Value("${kakao.url.clientId}")
+    private String clientId;
+
+    @Value("${kakao.url.redirectUrl}")
+    private String redirectUrl;
+
     public LoginDto login(SocialKakaoDto.TokenRequest requestDto) throws Exception {
 
         //액세슨 토큰 발급
@@ -81,8 +87,8 @@ public class SocialKakaoService {
 
         //param
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
-        paramMap.add("client_id", requestDto.getClientId());
-        paramMap.add("redirect_uri", requestDto.getRedirectUrl());
+        paramMap.add("client_id", clientId);
+        paramMap.add("redirect_uri", redirectUrl);
         paramMap.add("code", requestDto.getCode());
         paramMap.add("grant_type", "authorization_code");
 

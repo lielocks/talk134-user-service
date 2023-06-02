@@ -16,8 +16,6 @@ public class SocialKakaoDto {
     @Setter
     public static class TokenRequest {
         private String code;
-        private String clientId;
-        private String redirectUrl;
     }
 
     /**
