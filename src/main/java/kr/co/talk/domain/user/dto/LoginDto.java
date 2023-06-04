@@ -6,10 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginDto {
-
-    public String accessToken;
-    public String refreshToken;
-    public Long userId;
-    public String nickname;
-    public String teamCode;
+    private String accessToken;
+    private String refreshToken; // 쿠키로
+    private Long userId;
+    private String nickname;
+    private String teamCode;
+    private boolean isAdmin;
 }
