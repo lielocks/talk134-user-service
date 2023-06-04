@@ -10,10 +10,7 @@ import kr.co.talk.global.exception.CustomError;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -42,6 +39,9 @@ public class SocialKakaoService {
 
     @Value("${kakao.url.redirectUrl}")
     private String redirectUrl;
+
+    @Value("${kakao.url.clientSecret}")
+    private String clientSecret;
 
     public LoginDto login(SocialKakaoDto.TokenRequest requestDto) throws Exception {
 
@@ -89,6 +89,7 @@ public class SocialKakaoService {
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("client_id", clientId);
         paramMap.add("redirect_uri", redirectUrl);
+        paramMap.add("client_secret", clientSecret);
         paramMap.add("code", requestDto.getCode());
         paramMap.add("grant_type", "authorization_code");
 
