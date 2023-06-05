@@ -102,6 +102,7 @@ public class UserService {
 		}
 	}
 
+	@Transactional
 	public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
 		String teamCode = saveTeam(registerAdminUserDto);
 		Team team = teamRepository.findTeamByTeamCode(teamCode);
@@ -147,6 +148,7 @@ public class UserService {
 		return code;
 	}
 
+	@Transactional
 	public void registerUser(RegisterUserDto registerUserDto, Long userId) {
 		Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
 		if (team == null) {
@@ -182,6 +184,7 @@ public class UserService {
 		team.setTimeout(timeout);
 	}
 
+	@Transactional
 	public void updateNickname(long userId, String nickname) {
 		User user = userRepository.findByUserId(userId);
 		if (user == null) {
