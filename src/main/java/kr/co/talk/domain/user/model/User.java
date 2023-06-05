@@ -28,6 +28,7 @@ public class User {
 
     private String userName;
 
+    @Setter
     @Column(length = 20)
     private String nickname;
 
