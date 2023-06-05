@@ -9,4 +9,5 @@ import java.util.List;
 @NoArgsConstructor
 public class NicknameRequestDto {
     private List<Integer> nameCode;
+    long userId;
 }

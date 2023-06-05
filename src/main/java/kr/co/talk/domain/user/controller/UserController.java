@@ -65,13 +65,14 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/nickname")
-	public NicknameResponseDto createNickname(@RequestBody NicknameRequestDto requestDto) {
+	public NicknameResponseDto createNickname(@RequestHeader(value = "userId") Long userId, @RequestBody NicknameRequestDto requestDto) {
 		if (requestDto.getNameCode().size() != 3) {
 			throw new CustomException(CustomError.NAMECODE_SIZE_NOT_3);
 		}
-		return NicknameResponseDto.builder()
-				.nickname(nicknameService.getNickname(requestDto.getNameCode()))
-				.build();
+		var result = nicknameService.getNickname(requestDto.getNameCode());
+		userService.updateNickname(userId, result.getNickname());
+
+		return result;
 	}
 
 }

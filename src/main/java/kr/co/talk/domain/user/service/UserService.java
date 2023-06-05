@@ -177,4 +177,12 @@ public class UserService {
 		team.setTimeout(timeout);
 	}
 
+	public void updateNickname(long userId, String nickname) {
+		User user = userRepository.findByUserId(userId);
+		if (user == null) {
+			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+		}
+		user.setNickname(nickname);
+	}
+
 }

@@ -23,6 +23,8 @@ public class NicknameMap {
 
     private String value;
 
+    private String code;
+
     @Builder
     @Data
     public static class NicknameMapId implements Serializable {
