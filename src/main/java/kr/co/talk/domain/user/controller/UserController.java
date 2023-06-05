@@ -1,9 +1,10 @@
 package kr.co.talk.domain.user.controller;
 
-import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
-import kr.co.talk.domain.user.dto.RegisterUserDto;
-import kr.co.talk.domain.user.dto.ResponseDto;
+import kr.co.talk.domain.user.dto.*;
+import kr.co.talk.domain.user.service.NicknameService;
 import kr.co.talk.domain.user.service.UserService;
+import kr.co.talk.global.exception.CustomError;
+import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 public class UserController {
 
 	private final UserService userService;
+	private final NicknameService nicknameService;
 
 	@PostMapping("/admin/register")
 	public ResponseDto.TeamCodeResponseDto registerAdminUser(@RequestBody RegisterAdminUserDto registerAdminUserDto,
@@ -60,5 +62,18 @@ public class UserController {
 		userService.updateTimeout(userId, timeout);
 		return ResponseEntity.ok().build();
 	}
+
+	@RequestMapping(value = "/nickname", method = {RequestMethod.POST, RequestMethod.PUT})
+	public NicknameResponseDto createNickname(@RequestHeader(value = "userId") Long userId, @RequestBody NicknameRequestDto requestDto) {
+		if (requestDto.getNameCode().size() != 3) {
+			throw new CustomException(CustomError.NAMECODE_SIZE_NOT_3);
+		}
+		var result = nicknameService.getNickname(requestDto.getNameCode());
+		userService.updateNickname(userId, result.getNickname());
+
+		return result;
+	}
+
+
 
 }
