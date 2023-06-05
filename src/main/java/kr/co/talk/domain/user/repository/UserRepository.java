@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findUserByRoleAndTeam(String role, Team team);
     @Query("SELECT u FROM User u WHERE u.userName = :searchName OR u.nickname = :searchName")
     List<User> findUserByUserNameOrNickname(@Param("searchName") String searchName);
+    
+    List<User> findUserByTeamId(long teamId);
 }

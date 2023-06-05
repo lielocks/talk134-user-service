@@ -1,8 +1,17 @@
 package kr.co.talk.domain.user.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
 import kr.co.talk.domain.user.dto.RegisterUserDto;
 import kr.co.talk.domain.user.dto.ResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
 import kr.co.talk.domain.user.dto.SocialKakaoDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
@@ -12,10 +21,6 @@ import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 @Slf4j
@@ -97,6 +102,7 @@ public class UserService {
 		}
 	}
 
+	@Transactional
 	public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
 		String teamCode = saveTeam(registerAdminUserDto);
 		Team team = teamRepository.findTeamByTeamCode(teamCode);
@@ -142,6 +148,7 @@ public class UserService {
 		return code;
 	}
 
+	@Transactional
 	public void registerUser(RegisterUserDto registerUserDto, Long userId) {
 		Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
 		if (team == null) {
@@ -177,6 +184,7 @@ public class UserService {
 		team.setTimeout(timeout);
 	}
 
+	@Transactional
 	public void updateNickname(long userId, String nickname) {
 		User user = userRepository.findByUserId(userId);
 		if (user == null) {
@@ -185,4 +193,33 @@ public class UserService {
 		user.setNickname(nickname);
 	}
 
+	public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId, List<Long> userList) {
+        User createUser = userRepository.findByUserId(userId);
+        if (createUser == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        int timeout = createUser.getTeam().getTimeout();
+        String teamCode = createUser.getTeam().getTeamCode();
+        StringBuilder sb = new StringBuilder();
+        sb.append(createUser.getUserName());
+        
+        for (long u : userList) {
+            User user = userRepository.findByUserId(u);
+            if (user == null) {
+                throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+            }
+
+            sb.append(", ").append(user.getUserName());
+        }
+
+        CreateChatroomResponseDto chatroomResponseDto =
+                ResponseDto.CreateChatroomResponseDto.builder()
+                        .timeout(timeout)
+                        .teamCode(teamCode)
+                        .chatroomName(sb.toString())
+                        .build();
+
+
+        return chatroomResponseDto;
+	}
 }
