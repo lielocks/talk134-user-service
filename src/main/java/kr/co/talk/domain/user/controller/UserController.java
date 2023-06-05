@@ -63,8 +63,7 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/nickname")
+	@RequestMapping(value = "/nickname", method = {RequestMethod.POST, RequestMethod.PUT})
 	public NicknameResponseDto createNickname(@RequestHeader(value = "userId") Long userId, @RequestBody NicknameRequestDto requestDto) {
 		if (requestDto.getNameCode().size() != 3) {
 			throw new CustomException(CustomError.NAMECODE_SIZE_NOT_3);
@@ -74,5 +73,7 @@ public class UserController {
 
 		return result;
 	}
+
+
 
 }
