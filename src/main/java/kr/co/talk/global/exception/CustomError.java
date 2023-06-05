@@ -20,6 +20,9 @@ public enum CustomError {
     USER_DOES_NOT_EXIST(1035, "해당 사용자가 존재하지 않습니다.", HttpStatus.NOT_FOUND.value()),
     TOKEN_DOES_NOT_MATCH(1036, "사용자 아이디와 인증 토큰이 매치하지 않습니다.", HttpStatus.UNAUTHORIZED.value()),
 
+    NAMECODE_SIZE_NOT_3(1037, "Namecode size must be equal to 3", HttpStatus.BAD_REQUEST.value()),
+    NAMECODE_NOT_FOUND(1038, "등록되지 않은 코드입니다", HttpStatus.BAD_REQUEST.value()),
+
     //공통
     SERVER_ERROR(3000,"알수 없는 문제가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR.value());
 
