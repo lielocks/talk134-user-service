@@ -35,7 +35,7 @@ public class UserControllerTest {
     @WithMockUser
     void admin_user_register() throws Exception {
         //given
-        User user = User.builder().userId(1L).userUid("test").userName("testName").nickname("nickname").role("ROLE_ADMIN").build();
+        User user = User.builder().userId(1L).userUid("test").userName("testName").nickname("nickname").role(User.Role.ROLE_ADMIN).build();
 
         RegisterAdminUserDto adminUserDto = new RegisterAdminUserDto();
         adminUserDto.setTeamName("talk");

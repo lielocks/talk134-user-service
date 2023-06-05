@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.talk.domain.user.dto.AuthTokenDto;
 import kr.co.talk.domain.user.dto.LoginDto;
 import kr.co.talk.domain.user.dto.SocialKakaoDto;
+import kr.co.talk.domain.user.model.User.Role;
 import kr.co.talk.global.exception.CustomException;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.global.exception.CustomError;
@@ -17,6 +18,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import static kr.co.talk.domain.user.model.User.Role.*;
 
 @Service
 @Slf4j
@@ -63,7 +66,7 @@ public class SocialKakaoService {
                 .refreshToken(authToken.getRefreshToken())
                 .nickname(user.getNickname())
                 .teamCode(user.getTeam() != null ? user.getTeam().getTeamCode() : null)
-                .admin(user.getRole().endsWith("ADMIN"))
+                .admin(user.getRole().equals(ROLE_ADMIN))
                 .build();
     }
 

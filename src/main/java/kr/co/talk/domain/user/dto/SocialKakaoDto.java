@@ -5,6 +5,8 @@ import kr.co.talk.domain.user.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
+
 @Getter
 @Setter
 public class SocialKakaoDto {
@@ -41,7 +43,7 @@ public class SocialKakaoDto {
 
         //UserInfo -> User Entity
         public User createUser(){
-            User user = User.builder().userUid(id).role("ROLE_USER").build();
+            User user = User.builder().userUid(id).role(ROLE_USER).build();
             return user;
         }
     }

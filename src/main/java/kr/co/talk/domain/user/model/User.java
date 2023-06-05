@@ -32,7 +32,8 @@ public class User {
     @Column(length = 20)
     private String nickname;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     private int statusEnergy;
 
@@ -48,7 +49,11 @@ public class User {
 
     private Timestamp lastLoginTime;
 
-    public void registerInfo(String userName, Team team, String role) {
+    public enum Role {
+        ROLE_USER, ROLE_ADMIN
+    }
+
+    public void registerInfo(String userName, Team team, Role role) {
         this.userName = userName;
         this.team = team;
         this.role = role;

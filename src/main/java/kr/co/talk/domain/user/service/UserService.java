@@ -22,6 +22,9 @@ import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static kr.co.talk.domain.user.model.User.Role.ROLE_ADMIN;
+import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -38,13 +41,13 @@ public class UserService {
 
 	@Transactional
 	public User createAdminUser(Long userId) {
-		User user = User.builder().userId(userId).role("ROLE_ADMIN").build();
+		User user = User.builder().userId(userId).role(ROLE_ADMIN).build();
 		return userRepository.save(user);
 	}
 
 	@Transactional
 	public User createRoleUser(Long userId) {
-		User user = User.builder().userId(userId).role("ROLE_USER").build();
+		User user = User.builder().userId(userId).role(ROLE_USER).build();
 		return userRepository.save(user);
 	}
 
@@ -58,7 +61,6 @@ public class UserService {
 		Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode).build();
 		teamRepository.save(team);
 		log.info("TEAM = {}", team.getTeamName());
-		log.info("TEAM = {}", team.getId());
 		return teamCode;
 	}
 
@@ -107,7 +109,7 @@ public class UserService {
 		String teamCode = saveTeam(registerAdminUserDto);
 		Team team = teamRepository.findTeamByTeamCode(teamCode);
 
-		Optional<User> existingAdmin = userRepository.findUserByRoleAndTeam("ROLE_ADMIN", team);
+		Optional<User> existingAdmin = userRepository.findUserByRoleAndTeam(ROLE_ADMIN, team);
 		if (existingAdmin.isPresent()) {
 			throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
 		}
@@ -116,15 +118,13 @@ public class UserService {
 		if (user == null) {
 			// 사용자 정보가 없을 경우, 새로운 사용자 생성
 			user = createAdminUser(userId);
-		} else if (user.getRole().equals("ROLE_ADMIN")) {
+		} else if (user.getRole().equals(ROLE_ADMIN)) {
 			throw new CustomException(CustomError.ADMIN_ALREADY_EXISTS);
 		}
 
-		user.registerInfo(registerAdminUserDto.getName(), team, "ROLE_ADMIN");
-		userRepository.save(user);
+		user.registerInfo(registerAdminUserDto.getName(), team, ROLE_ADMIN);
 
 		log.info("TEAM = {}", team.getTeamName());
-		log.info("TEAM = {}", team.getId());
 		log.info("USER = {}", user.getRole());
 
 		ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
@@ -156,20 +156,19 @@ public class UserService {
 		}
 		log.info("TEAM = {}", team.getTeamName());
 		log.info("TEAM = {}", team.getTeamCode());
-		log.info("TEAM = {}", team.getId());
+
 		User user = userRepository.findByUserId(userId);
 
 		if (user == null) {
 			// 사용자 정보가 없을 경우, 새로운 사용자 생성
 			user = createRoleUser(userId);
 		} else {
-			if (user.getRole().equals("ROLE_ADMIN")) {
+			if (user.getRole().equals(ROLE_ADMIN)) {
 				throw new CustomException(CustomError.ADMIN_CANNOT_REGISTER_USER);
 			}
 			throw new CustomException(CustomError.USER_ALREADY_EXISTS);
 		}
-		user.registerInfo(registerUserDto.getName(), team, "ROLE_USER");
-		userRepository.save(user);
+		user.registerInfo(registerUserDto.getName(), team, ROLE_USER);
 	}
 
 	@Transactional
