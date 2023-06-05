@@ -43,22 +43,21 @@ class UserServiceTest {
     void user_role_register() throws Exception {
         //given
         User adminUser = User.builder().userId(1L).userName("testName").userUid("abcdefi").nickname("nickName").build();
-
-        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(adminUser.getUserId()));
+        User user = User.builder().userName("testName").userUid("abcdefi").nickname("nickName").build();
 
         RegisterAdminUserDto registerAdminUserDto = new RegisterAdminUserDto();
         registerAdminUserDto.setName(adminUser.getUserName());
         registerAdminUserDto.setTeamName("talk");
-        ResponseDto.TeamCodeResponseDto teamCodeResponseDto = userService.registerAdminUser(registerAdminUserDto, accessToken);
+        ResponseDto.TeamCodeResponseDto teamCodeResponseDto = userService.registerAdminUser(registerAdminUserDto, 1L);
 
         RegisterUserDto registerUserDto = new RegisterUserDto();
-        registerUserDto.setName("testName");
+        registerUserDto.setName(user.getUserName());
         registerUserDto.setTeamCode(teamCodeResponseDto.getTeamCode());
-        userService.registerUser(registerUserDto, accessToken);
+        userService.registerUser(registerUserDto, 1L);
 
         //when
         Throwable exception = assertThrows(CustomException.class, () -> {
-            userService.registerUser(registerUserDto, accessToken);
+            userService.registerUser(registerUserDto, 1L);
         });
 
         // then

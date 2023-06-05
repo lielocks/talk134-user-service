@@ -43,7 +43,7 @@ public class UserControllerTest {
 
         ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
         teamCodeResponseDto.setTeamCode("talk");
-        given(userService.registerAdminUser(adminUserDto, "accessToken"))
+        given(userService.registerAdminUser(adminUserDto, 1L))
                 .willReturn(teamCodeResponseDto);
 
         //when
@@ -52,7 +52,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/user/admin/register")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "accessToken")
+                        .header("userId", 1L)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .with(csrf()))
