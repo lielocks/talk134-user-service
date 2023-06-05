@@ -60,5 +60,17 @@ public class UserController {
 		userService.updateTimeout(userId, timeout);
 		return ResponseEntity.ok().build();
 	}
+	
+	/**
+	 * chat-service에서 호출하는 api
+	 * create chatroom시 필요한 dto response
+	 * 
+	 * @param userId : chatroom 생성자, userList: 생성자가 고른 userIds
+	 * @return
+	 */
+	@PostMapping("/required-create-chatroom-info/{userId}")
+	public ResponseEntity<?> getTimeout(@PathVariable(value = "userId") long userId,  @RequestBody List<Long> userList) {
+        return ResponseEntity.ok(userService.requiredCreateChatroomInfo(userId, userList));
+    }
 
 }

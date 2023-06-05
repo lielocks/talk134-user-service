@@ -1,5 +1,6 @@
 package kr.co.talk.domain.user.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,5 +23,16 @@ public class ResponseDto {
     public static class UserIdResponseDto {
         private Long userId;
         private String userName;
+    }
+    
+    /**
+     * chat-service에서 chatroom create시 필요한 dto
+     */
+    @Data
+    @Builder
+    public static class CreateChatroomResponseDto{
+        private int timeout;
+        private String teamCode;
+        private String chatroomName;
     }
 }
