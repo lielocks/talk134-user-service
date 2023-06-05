@@ -60,18 +60,14 @@ public class SocialKakaoService {
         //accesstoken userId로 발급
         AuthTokenDto authToken = authService.createAuthToken(user.getUserId());
 
-        LoginDto loginDto = new LoginDto();
-        loginDto.setUserId(user.getUserId());
-        loginDto.setAccessToken(authToken.getAccessToken());
-        loginDto.setRefreshToken(authToken.getRefreshToken());
-        loginDto.setNickname(user.getNickname());
-        if (user.getTeam() != null) {
-            loginDto.setTeamCode(user.getTeam().getTeamCode());
-        } else {
-            loginDto.setTeamCode(null);
-        }
-        return loginDto;
-
+        return LoginDto.builder()
+                .userId(user.getUserId())
+                .accessToken(authToken.getAccessToken())
+                .refreshToken(authToken.getRefreshToken())
+                .nickname(user.getNickname())
+                .teamCode(user.getTeam() != null ? user.getTeam().getTeamCode() : null)
+                .admin(user.getRole().endsWith("ADMIN"))
+                .build();
     }
 
     /**
@@ -93,7 +89,7 @@ public class SocialKakaoService {
         paramMap.add("code", requestDto.getCode());
         paramMap.add("grant_type", "authorization_code");
 
-        ResponseEntity<String> responseEntity = null;
+        ResponseEntity<String> responseEntity;
 
         //http 요청
         try {
@@ -124,7 +120,7 @@ public class SocialKakaoService {
         //param
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
 
-        ResponseEntity<String> responseEntity = null;
+        ResponseEntity<String> responseEntity;
 
         //http 요청
         try {

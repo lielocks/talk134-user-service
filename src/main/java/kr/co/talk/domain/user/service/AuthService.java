@@ -52,10 +52,7 @@ public class AuthService {
 
     //리프레스 토큰으로 액세스 토큰 재발급
     @Transactional
-    public AuthTokenDto tokenRefresh(AuthTokenDto request) {
-        String refreshToken = request.getRefreshToken();
-        String accessToken = request.getAccessToken();
-
+    public AuthTokenDto tokenRefresh(String accessToken, String refreshToken) {
         //refreshToken 유효성 체크
         jwtTokenProvider.validRefreshToken(refreshToken);
 
@@ -67,7 +64,7 @@ public class AuthService {
         //TODO 재발급 인증 로직 추가
         String userId = jwtTokenProvider.getAccessTokenSubject(accessToken);
 
-        if(!authToken.getUserId().equals(userId)){
+        if (!authToken.getUserId().equals(Long.valueOf(userId))) {
             throw new CustomException(CustomError.REFRESH_TOKEN_INVALID);
         }
 
@@ -77,7 +74,7 @@ public class AuthService {
 
         //기존 인증 정보 삭제 후 새로운 인증 정보 저장
         authTokenRepository.delete(authToken);
-        authTokenRepository.save(new AuthToken(newRefreshToken,Long.valueOf(userId)));
+        authTokenRepository.save(new AuthToken(newRefreshToken, Long.valueOf(userId)));
 
         return new AuthTokenDto(newAccessToken, newRefreshToken);
 
