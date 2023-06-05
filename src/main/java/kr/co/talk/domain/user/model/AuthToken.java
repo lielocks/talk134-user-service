@@ -1,5 +1,6 @@
 package kr.co.talk.domain.user.model;
 
+import kr.co.talk.global.constant.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,8 @@ import org.springframework.data.redis.core.index.Indexed;
 
 /**
  * redis 저장 객체
- * **/
-@RedisHash(value = "authToken",timeToLive = 60 * 60 * 24 * 15)
+ */
+@RedisHash(value = "authToken", timeToLive = Constants.REFRESH_TOKEN_TTL_SECONDS)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -24,6 +25,5 @@ public class AuthToken {
     //userId로 객체 조회
     @Indexed
     private Long userId;
-
 
 }
