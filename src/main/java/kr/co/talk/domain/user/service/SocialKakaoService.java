@@ -37,9 +37,6 @@ public class SocialKakaoService {
     @Value("${kakao.url.clientId}")
     private String clientId;
 
-    @Value("${kakao.url.redirectUrl}")
-    private String redirectUrl;
-
     @Value("${kakao.url.clientSecret}")
     private String clientSecret;
 
@@ -84,7 +81,7 @@ public class SocialKakaoService {
         //param
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("client_id", clientId);
-        paramMap.add("redirect_uri", redirectUrl);
+        paramMap.add("redirect_uri", requestDto.getRedirectUri());
         paramMap.add("client_secret", clientSecret);
         paramMap.add("code", requestDto.getCode());
         paramMap.add("grant_type", "authorization_code");
