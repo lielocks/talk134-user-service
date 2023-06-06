@@ -23,7 +23,7 @@ public class User {
     private Team team;
 
     //소셜 로그인시 유저 정보키
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String userUid;
 
     private String userName;
