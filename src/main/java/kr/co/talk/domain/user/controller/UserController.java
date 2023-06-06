@@ -25,6 +25,7 @@ public class UserController {
 	@PostMapping("/admin/register")
 	public ResponseDto.TeamCodeResponseDto registerAdminUser(@RequestBody RegisterAdminUserDto registerAdminUserDto,
 			@RequestHeader(value = "userId") Long userId) {
+		log.info("Received userId from header: {}", userId);
 		return userService.registerAdminUser(registerAdminUserDto, userId);
 	}
 
