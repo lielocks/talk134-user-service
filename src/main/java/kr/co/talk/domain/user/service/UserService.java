@@ -183,15 +183,6 @@ public class UserService {
 		team.setTimeout(timeout);
 	}
 
-	@Transactional
-	public void updateNickname(long userId, String nickname) {
-		User user = userRepository.findByUserId(userId);
-		if (user == null) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		}
-		user.setNickname(nickname);
-	}
-
 	public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId, List<Long> userList) {
         User createUser = userRepository.findByUserId(userId);
         if (createUser == null) {
