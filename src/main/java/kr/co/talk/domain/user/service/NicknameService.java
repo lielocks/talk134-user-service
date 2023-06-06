@@ -50,7 +50,7 @@ public class NicknameService {
                 .orElseThrow(() -> new CustomException(CustomError.NAMECODE_NOT_FOUND));
     }
 
-    private String generateProfileUrl(String nicknameCode) {
+    public static String generateProfileUrl(String nicknameCode) {
         return String.format("https://134-back.s3.ap-northeast-2.amazonaws.com/profile/%s.png", nicknameCode);
     }
 }

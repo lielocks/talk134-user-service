@@ -82,6 +82,11 @@ public class UserController {
 		return nicknameService.getNicknameAndSave(userId, requestDto.getNameCode());
 	}
 
-
-
+	@GetMapping("/teammate")
+	public List<TeammateResponseDto> getTeammates(@RequestHeader(value = "userId") Long userId) {
+		if (userId == null) {
+			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+		}
+		return userService.getTeammates(userId);
+	}
 }
