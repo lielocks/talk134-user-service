@@ -29,10 +29,9 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity registerUser(@RequestBody RegisterUserDto registerUserDto,
+	public ResponseDto.TeamCodeResponseDto registerUser(@RequestBody RegisterUserDto registerUserDto,
 			@RequestHeader(value = "userId") Long userId) {
-		userService.registerUser(registerUserDto, userId);
-		return new ResponseEntity(HttpStatus.OK);
+		return userService.registerUser(registerUserDto, userId);
 	}
 
 	@GetMapping("/name")

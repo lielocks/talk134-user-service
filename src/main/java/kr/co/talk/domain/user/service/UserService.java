@@ -1,9 +1,6 @@
 package kr.co.talk.domain.user.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,8 +106,8 @@ public class UserService {
 		String teamCode = saveTeam(registerAdminUserDto);
 		Team team = teamRepository.findTeamByTeamCode(teamCode);
 
-		Optional<User> existingAdmin = userRepository.findUserByRoleAndTeam(ROLE_ADMIN, team);
-		if (existingAdmin.isPresent()) {
+		Optional<User> existingUser = userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
+		if (existingUser.isPresent()) {
 			throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
 		}
 
@@ -149,7 +146,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void registerUser(RegisterUserDto registerUserDto, Long userId) {
+	public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto, Long userId) {
 		Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
 		if (team == null) {
 			throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
@@ -166,9 +163,12 @@ public class UserService {
 			if (user.getRole().equals(ROLE_ADMIN)) {
 				throw new CustomException(CustomError.ADMIN_CANNOT_REGISTER_USER);
 			}
-			throw new CustomException(CustomError.USER_ALREADY_EXISTS);
 		}
+
 		user.registerInfo(registerUserDto.getName(), team, ROLE_USER);
+		ResponseDto.TeamCodeResponseDto teamCode = new ResponseDto.TeamCodeResponseDto();
+		teamCode.setTeamCode(team.getTeamCode());
+		return teamCode;
 	}
 
 	@Transactional
