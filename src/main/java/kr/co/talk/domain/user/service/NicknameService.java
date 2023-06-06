@@ -28,6 +28,6 @@ public class NicknameService {
     }
 
     private String generateProfileUrl(String nicknameCode) {
-        return String.format("https://134-front.s3.ap-northeast-2.amazonaws.com/profile/%s.png", nicknameCode);
+        return String.format("https://134-back.s3.ap-northeast-2.amazonaws.com/profile/%s.png", nicknameCode);
     }
 }
