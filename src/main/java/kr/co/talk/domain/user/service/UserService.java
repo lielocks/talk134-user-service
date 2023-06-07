@@ -1,13 +1,13 @@
 package kr.co.talk.domain.user.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import kr.co.talk.domain.user.dto.*;
+import kr.co.talk.domain.user.repository.CustomUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
-import kr.co.talk.domain.user.dto.RegisterUserDto;
-import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TimeoutResponseDto;
 import kr.co.talk.domain.user.dto.SocialKakaoDto;
@@ -30,6 +30,7 @@ import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
 public class UserService {
 	private final UserRepository userRepository;
 	private final TeamRepository teamRepository;
+	private final CustomUserRepository customUserRepository;
 
 	@Transactional
 	public User createUser(SocialKakaoDto.UserInfo userInfoDto) {
@@ -183,27 +184,18 @@ public class UserService {
 		
 		team.setTimeout(timeout);
 	}
-	
+
 	public ResponseDto.TimeoutResponseDto getTimeout(long userId) {
 	    User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
-        
-        ResponseDto.TimeoutResponseDto timeoutResponseDto = new ResponseDto.TimeoutResponseDto();
-        
-        timeoutResponseDto.setTimeout(user.getTeam().getTimeout());
-        
-        return timeoutResponseDto;
-	}
 
-	@Transactional
-	public void updateNickname(long userId, String nickname) {
-		User user = userRepository.findByUserId(userId);
-		if (user == null) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		}
-		user.setNickname(nickname);
+        ResponseDto.TimeoutResponseDto timeoutResponseDto = new ResponseDto.TimeoutResponseDto();
+
+        timeoutResponseDto.setTimeout(user.getTeam().getTimeout());
+
+        return timeoutResponseDto;
 	}
 
 	public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId, List<Long> userList) {
@@ -234,5 +226,24 @@ public class UserService {
 
 
         return chatroomResponseDto;
+	}
+
+	/**
+	 * 참가자 조회 API
+	 * @param userId user id
+	 * @return {@link TeammateResponseDto} list
+	 */
+	@Transactional(readOnly = true)
+	public List<TeammateResponseDto> getTeammates(Long userId) {
+		List<TeammateQueryDto> list = customUserRepository.selectTeammateByUserId(userId);
+
+		return list.stream()
+				.map(query -> TeammateResponseDto.builder()
+						.name(query.getName())
+						.nickname(query.getNickname())
+						.profileUrl(NicknameService.generateProfileUrl(query.getNickname()))
+						.userId(query.getUserId())
+						.build())
+				.collect(Collectors.toUnmodifiableList());
 	}
 }
