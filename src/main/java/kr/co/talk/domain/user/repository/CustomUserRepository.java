@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static kr.co.talk.domain.user.model.QTeam.team;
 import static kr.co.talk.domain.user.model.QUser.user;
 
 @RequiredArgsConstructor
@@ -23,11 +22,8 @@ public class CustomUserRepository {
                         user.userName,
                         user.nickname,
                         user.profileImgCode,
-                        user.userId
-                        ))
+                        user.userId))
                 .from(user)
-                .innerJoin(user.team, team)
-                .fetchJoin()
                 .where(user.team.id.eq(
                         JPAExpressions
                                 .select(user.team.id)
