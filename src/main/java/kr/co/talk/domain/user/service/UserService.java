@@ -238,7 +238,7 @@ public class UserService {
 				.map(query -> TeammateResponseDto.builder()
 						.name(query.getName())
 						.nickname(query.getNickname())
-						.profileUrl(NicknameService.generateProfileUrl(query.getNickname()))
+						.profileUrl(NicknameService.generateProfileUrl(query.getProfileImgCode()))
 						.userId(query.getUserId())
 						.build())
 				.collect(Collectors.toUnmodifiableList());
