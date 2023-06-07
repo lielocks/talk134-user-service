@@ -10,13 +10,18 @@ import lombok.NoArgsConstructor;
 public class ResponseDto {
 
     @Data
-    public static class NameResponseDto{
+    public static class NameResponseDto {
         private String name;
     }
 
     @Data
-    public static class TeamCodeResponseDto{
+    public static class TeamCodeResponseDto {
         private String teamCode;
+    }
+
+    @Data
+    public static class TimeoutResponseDto {
+        private int timeout;
     }
 
     @Data
@@ -24,13 +29,13 @@ public class ResponseDto {
         private Long userId;
         private String userName;
     }
-    
+
     /**
      * chat-service에서 chatroom create시 필요한 dto
      */
     @Data
     @Builder
-    public static class CreateChatroomResponseDto{
+    public static class CreateChatroomResponseDto {
         private int timeout;
         private String teamCode;
         private String chatroomName;

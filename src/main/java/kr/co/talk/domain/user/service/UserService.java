@@ -9,6 +9,7 @@ import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
 import kr.co.talk.domain.user.dto.RegisterUserDto;
 import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.TimeoutResponseDto;
 import kr.co.talk.domain.user.dto.SocialKakaoDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
@@ -181,6 +182,19 @@ public class UserService {
 		Team team = user.getTeam();
 		
 		team.setTimeout(timeout);
+	}
+	
+	public ResponseDto.TimeoutResponseDto getTimeout(long userId) {
+	    User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        
+        ResponseDto.TimeoutResponseDto timeoutResponseDto = new ResponseDto.TimeoutResponseDto();
+        
+        timeoutResponseDto.setTimeout(user.getTeam().getTimeout());
+        
+        return timeoutResponseDto;
 	}
 
 	@Transactional

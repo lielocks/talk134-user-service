@@ -63,6 +63,11 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 	
+	@GetMapping("/get-timeout")
+	public ResponseDto.TimeoutResponseDto getTimeout(@RequestHeader(value = "userId") Long userId) {
+	    return userService.getTimeout(userId);
+	}
+	
 	/**
 	 * chat-service에서 호출하는 api
 	 * create chatroom시 필요한 dto response
