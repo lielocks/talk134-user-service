@@ -1,24 +1,21 @@
 package kr.co.talk.domain.user.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import kr.co.talk.domain.user.dto.*;
-import kr.co.talk.domain.user.repository.CustomUserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
-import kr.co.talk.domain.user.dto.ResponseDto.TimeoutResponseDto;
-import kr.co.talk.domain.user.dto.SocialKakaoDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
+import kr.co.talk.domain.user.repository.CustomUserRepository;
 import kr.co.talk.domain.user.repository.TeamRepository;
 import kr.co.talk.domain.user.repository.UserRepository;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static kr.co.talk.domain.user.model.User.Role.ROLE_ADMIN;
 import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
