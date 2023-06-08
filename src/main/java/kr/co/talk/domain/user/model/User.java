@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
 
 @Entity
@@ -26,6 +28,7 @@ public class User {
     //@Column(nullable = false)
     private String userUid;
 
+    @Pattern(regexp = "^[가-힣]{2,}$", message = "이름은 한글 2자 이상이어야 합니다.")
     private String userName;
 
     @Setter

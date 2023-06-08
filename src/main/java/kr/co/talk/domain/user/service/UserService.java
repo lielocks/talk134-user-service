@@ -114,13 +114,15 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseDto.TeamCodeResponseDto registerAdminUser(
-            RegisterAdminUserDto registerAdminUserDto, Long userId) {
+    public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
+        Optional<Team> teamByTeamName = teamRepository.findTeamByTeamName(registerAdminUserDto.getTeamName());
+        if (teamByTeamName.isPresent()) {
+            throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
+        }
         String teamCode = saveTeam(registerAdminUserDto);
         Team team = teamRepository.findTeamByTeamCode(teamCode);
 
-        Optional<User> existingUser =
-                userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
+        Optional<User> existingUser = userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
         if (existingUser.isPresent()) {
             throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
         }
@@ -161,7 +163,7 @@ public class UserService {
 
     @Transactional
     public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto,
-            Long userId) {
+                                                        Long userId) {
         Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
         if (team == null) {
             throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
@@ -212,7 +214,7 @@ public class UserService {
     }
 
     public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId,
-            List<Long> userList) {
+                                                                            List<Long> userList) {
         User createUser = userRepository.findByUserId(userId);
         if (createUser == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
@@ -247,7 +249,7 @@ public class UserService {
 
     /**
      * 참가자 조회 API
-     * 
+     *
      * @param userId user id
      * @return {@link TeammateResponseDto} list
      */
