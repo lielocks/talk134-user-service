@@ -46,9 +46,9 @@ public class UserController {
 		return userService.findTeamCode(userId);
 	}
 
-	@GetMapping("/id/{searchName}")
-	public List<ResponseDto.UserIdResponseDto> getUserIdByName(@PathVariable("searchName") String searchName) {
-		return userService.searchUserId(searchName);
+	@GetMapping("/id/{teamCode}/{searchName}")
+	public List<ResponseDto.UserIdResponseDto> getUserIdByName(@PathVariable("teamCode") String teamCode, @PathVariable("searchName") String searchName) {
+		return userService.searchUserId(teamCode, searchName);
 	}
 
 	/**
