@@ -40,4 +40,11 @@ public class ResponseDto {
         private String teamCode;
         private String chatroomName;
     }
+
+    @Data
+    @Builder
+    public static class ChatRoomEnterResponseDto {
+        private String nickname;
+        private String userName;
+    }
 }
