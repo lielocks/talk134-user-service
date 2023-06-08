@@ -1,8 +1,10 @@
 package kr.co.talk.domain.user.controller;
 
 import kr.co.talk.domain.user.dto.*;
+import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import kr.co.talk.domain.user.service.NicknameService;
 import kr.co.talk.domain.user.service.UserService;
+import kr.co.talk.global.aspect.UserId;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class UserController {
 	private final UserService userService;
 	private final NicknameService nicknameService;
 
-	@PostMapping("/admin/register")
+	@ PostMapping("/admin/register")
 	public ResponseDto.TeamCodeResponseDto registerAdminUser(@RequestBody RegisterAdminUserDto registerAdminUserDto,
 			@RequestHeader(value = "userId") Long userId) {
 		log.info("Received userId from header: {}", userId);
@@ -93,5 +95,11 @@ public class UserController {
 			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
 		}
 		return userService.getTeammates(userId);
+	}
+
+	@UserId
+	@GetMapping("/enter-info")
+	public ChatRoomEnterResponseDto findEnterInfo(@RequestHeader(value = "userId") long userId) {
+		return userService.requiredEnterInfo(userId);
 	}
 }
