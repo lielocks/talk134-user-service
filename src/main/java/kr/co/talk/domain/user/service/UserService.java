@@ -63,7 +63,8 @@ public class UserService {
     @Transactional
     public String saveTeam(RegisterAdminUserDto registerAdminUserDto) {
         String teamCode = makeCode();
-        Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode).build();
+        Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode)
+                .build();
         teamRepository.save(team);
         log.info("TEAM = {}", team.getTeamName());
         return teamCode;
@@ -80,8 +81,10 @@ public class UserService {
         }
     }
 
-    public List<ResponseDto.UserIdResponseDto> searchUserId(String searchName) {
-        List<User> users = userRepository.findUserByUserNameOrNickname(searchName);
+    public List<ResponseDto.UserIdResponseDto> searchUserId(String teamCode, String searchName) {
+        List<User> users = userRepository.findUserByUserNameOrNickname(searchName).stream()
+                .filter(u -> u.getTeam().getTeamCode().equals(teamCode))
+                .collect(Collectors.toList());
         List<ResponseDto.UserIdResponseDto> resultList = new ArrayList<>();
 
         if (users == null || users.isEmpty()) {
@@ -103,18 +106,21 @@ public class UserService {
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         } else {
-            ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
+            ResponseDto.TeamCodeResponseDto teamCodeResponseDto =
+                    new ResponseDto.TeamCodeResponseDto();
             teamCodeResponseDto.setTeamCode(user.getTeam().getTeamCode());
             return teamCodeResponseDto;
         }
     }
 
     @Transactional
-    public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
+    public ResponseDto.TeamCodeResponseDto registerAdminUser(
+            RegisterAdminUserDto registerAdminUserDto, Long userId) {
         String teamCode = saveTeam(registerAdminUserDto);
         Team team = teamRepository.findTeamByTeamCode(teamCode);
 
-        Optional<User> existingUser = userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
+        Optional<User> existingUser =
+                userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
         if (existingUser.isPresent()) {
             throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
         }
@@ -154,7 +160,8 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto, Long userId) {
+    public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto,
+            Long userId) {
         Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
         if (team == null) {
             throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
@@ -185,9 +192,9 @@ public class UserService {
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
-        
+
         Team team = user.getTeam();
-        
+
         team.setTimeout(timeout);
     }
 
@@ -240,6 +247,7 @@ public class UserService {
 
     /**
      * 참가자 조회 API
+     * 
      * @param userId user id
      * @return {@link TeammateResponseDto} list
      */
