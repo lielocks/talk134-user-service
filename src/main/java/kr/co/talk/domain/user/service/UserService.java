@@ -111,6 +111,10 @@ public class UserService {
 
 	@Transactional
 	public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
+		Optional<Team> teamByTeamName = teamRepository.findTeamByTeamName(registerAdminUserDto.getTeamName());
+		if (teamByTeamName.isPresent()) {
+			throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
+		}
 		String teamCode = saveTeam(registerAdminUserDto);
 		Team team = teamRepository.findTeamByTeamCode(teamCode);
 
