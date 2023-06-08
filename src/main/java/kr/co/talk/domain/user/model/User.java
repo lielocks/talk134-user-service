@@ -43,6 +43,9 @@ public class User {
 
     private String statusKeyword;
 
+    @Setter
+    private String profileImgCode;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createTime;

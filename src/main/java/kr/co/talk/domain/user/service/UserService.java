@@ -1,24 +1,21 @@
 package kr.co.talk.domain.user.service;
 
-import java.util.*;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
-import kr.co.talk.domain.user.dto.RegisterUserDto;
-import kr.co.talk.domain.user.dto.ResponseDto;
+import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
-import kr.co.talk.domain.user.dto.ResponseDto.TimeoutResponseDto;
-import kr.co.talk.domain.user.dto.SocialKakaoDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
+import kr.co.talk.domain.user.repository.CustomUserRepository;
 import kr.co.talk.domain.user.repository.TeamRepository;
 import kr.co.talk.domain.user.repository.UserRepository;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static kr.co.talk.domain.user.model.User.Role.ROLE_ADMIN;
 import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
@@ -30,6 +27,7 @@ import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
 public class UserService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
+    private final CustomUserRepository customUserRepository;
 
     @Transactional
     public User createUser(SocialKakaoDto.UserInfo userInfoDto) {
@@ -56,8 +54,7 @@ public class UserService {
     @Transactional
     public String saveTeam(RegisterAdminUserDto registerAdminUserDto) {
         String teamCode = makeCode();
-        Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode)
-                .build();
+        Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode).build();
         teamRepository.save(team);
         log.info("TEAM = {}", team.getTeamName());
         return teamCode;
@@ -97,21 +94,18 @@ public class UserService {
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         } else {
-            ResponseDto.TeamCodeResponseDto teamCodeResponseDto =
-                    new ResponseDto.TeamCodeResponseDto();
+            ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
             teamCodeResponseDto.setTeamCode(user.getTeam().getTeamCode());
             return teamCodeResponseDto;
         }
     }
 
     @Transactional
-    public ResponseDto.TeamCodeResponseDto registerAdminUser(
-            RegisterAdminUserDto registerAdminUserDto, Long userId) {
+    public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
         String teamCode = saveTeam(registerAdminUserDto);
         Team team = teamRepository.findTeamByTeamCode(teamCode);
 
-        Optional<User> existingUser =
-                userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
+        Optional<User> existingUser = userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
         if (existingUser.isPresent()) {
             throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
         }
@@ -151,8 +145,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto,
-            Long userId) {
+    public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto, Long userId) {
         Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
         if (team == null) {
             throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
@@ -183,9 +176,9 @@ public class UserService {
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
-
+        
         Team team = user.getTeam();
-
+        
         team.setTimeout(timeout);
     }
 
@@ -200,15 +193,6 @@ public class UserService {
         timeoutResponseDto.setTimeout(user.getTeam().getTimeout());
 
         return timeoutResponseDto;
-    }
-
-    @Transactional
-    public void updateNickname(long userId, String nickname) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-        }
-        user.setNickname(nickname);
     }
 
     public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId,
@@ -243,5 +227,24 @@ public class UserService {
 
 
         return chatroomResponseDto;
+    }
+
+    /**
+     * 참가자 조회 API
+     * @param userId user id
+     * @return {@link TeammateResponseDto} list
+     */
+    @Transactional(readOnly = true)
+    public List<TeammateResponseDto> getTeammates(Long userId) {
+        List<TeammateQueryDto> list = customUserRepository.selectTeammateByUserId(userId);
+
+        return list.stream()
+                .map(query -> TeammateResponseDto.builder()
+                        .name(query.getName())
+                        .nickname(query.getNickname())
+                        .profileUrl(NicknameService.generateProfileUrl(query.getProfileImgCode()))
+                        .userId(query.getUserId())
+                        .build())
+                .collect(Collectors.toUnmodifiableList());
     }
 }
