@@ -2,9 +2,8 @@ package kr.co.talk.domain.user.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder
@@ -22,5 +21,8 @@ public class Team {
 
     private String teamCode;
     private int timeout;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.LAZY)
+    private List<User> users;
 
 }

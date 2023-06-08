@@ -86,10 +86,15 @@ public class UserController {
 		if (requestDto.getNameCode().size() != 3) {
 			throw new CustomException(CustomError.NAMECODE_SIZE_NOT_3);
 		}
-		var result = nicknameService.getNickname(requestDto.getNameCode());
-		userService.updateNickname(userId, result.getNickname());
+		return nicknameService.getNicknameAndSave(userId, requestDto.getNameCode());
+	}
 
-		return result;
+	@GetMapping("/teammate")
+	public List<TeammateResponseDto> getTeammates(@RequestHeader(value = "userId") Long userId) {
+		if (userId == null) {
+			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+		}
+		return userService.getTeammates(userId);
 	}
 
 	@UserId
@@ -97,5 +102,4 @@ public class UserController {
 	public ChatRoomEnterResponseDto findEnterInfo(@RequestHeader(value = "userId") long userId) {
 		return userService.requiredEnterInfo(userId);
 	}
-
 }
