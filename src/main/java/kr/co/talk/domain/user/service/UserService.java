@@ -2,6 +2,7 @@ package kr.co.talk.domain.user.service;
 
 import java.util.*;
 
+import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -234,5 +235,20 @@ public class UserService {
 
 
         return chatroomResponseDto;
+	}
+
+	public ChatRoomEnterResponseDto requiredEnterInfo(long userId) {
+		User searchUser = userRepository.findByUserId(userId);
+		if (searchUser == null) {
+			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+		}
+
+		ChatRoomEnterResponseDto  chatRoomEnterResponseDto =
+				ChatRoomEnterResponseDto.builder()
+						.userName(searchUser.getUserName())
+						.nickname(searchUser.getNickname())
+						.build();
+
+		return chatRoomEnterResponseDto;
 	}
 }
