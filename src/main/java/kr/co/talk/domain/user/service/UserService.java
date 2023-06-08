@@ -34,165 +34,165 @@ import static kr.co.talk.domain.user.model.User.Role.ROLE_USER;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
-	private final UserRepository userRepository;
-	private final TeamRepository teamRepository;
-	private final CustomUserRepository customUserRepository;
+    private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
+    private final CustomUserRepository customUserRepository;
 
-	@Transactional
-	public User createUser(SocialKakaoDto.UserInfo userInfoDto) {
-		User user = userInfoDto.createUser();
-		return userRepository.save(user);
-	}
+    @Transactional
+    public User createUser(SocialKakaoDto.UserInfo userInfoDto) {
+        User user = userInfoDto.createUser();
+        return userRepository.save(user);
+    }
 
-	@Transactional
-	public User createAdminUser(Long userId) {
-		User user = User.builder().userId(userId).role(ROLE_ADMIN).build();
-		return userRepository.save(user);
-	}
+    @Transactional
+    public User createAdminUser(Long userId) {
+        User user = User.builder().userId(userId).role(ROLE_ADMIN).build();
+        return userRepository.save(user);
+    }
 
-	@Transactional
-	public User createRoleUser(Long userId) {
-		User user = User.builder().userId(userId).role(ROLE_USER).build();
-		return userRepository.save(user);
-	}
+    @Transactional
+    public User createRoleUser(Long userId) {
+        User user = User.builder().userId(userId).role(ROLE_USER).build();
+        return userRepository.save(user);
+    }
 
-	public User findByUserUid(String userUid) {
-		return userRepository.findByUserUid(userUid);
-	}
+    public User findByUserUid(String userUid) {
+        return userRepository.findByUserUid(userUid);
+    }
 
-	@Transactional
-	public String saveTeam(RegisterAdminUserDto registerAdminUserDto) {
-		String teamCode = makeCode();
-		Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode).build();
-		teamRepository.save(team);
-		log.info("TEAM = {}", team.getTeamName());
-		return teamCode;
-	}
+    @Transactional
+    public String saveTeam(RegisterAdminUserDto registerAdminUserDto) {
+        String teamCode = makeCode();
+        Team team = Team.builder().teamName(registerAdminUserDto.getTeamName()).teamCode(teamCode).build();
+        teamRepository.save(team);
+        log.info("TEAM = {}", team.getTeamName());
+        return teamCode;
+    }
 
-	public ResponseDto.NameResponseDto nameFromUser(Long userId) {
-		User user = userRepository.findByUserId(userId);
-		if (user == null) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		} else {
-			ResponseDto.NameResponseDto nameResponseDto = new ResponseDto.NameResponseDto();
-			nameResponseDto.setName(user.getUserName());
-			return nameResponseDto;
-		}
-	}
+    public ResponseDto.NameResponseDto nameFromUser(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        } else {
+            ResponseDto.NameResponseDto nameResponseDto = new ResponseDto.NameResponseDto();
+            nameResponseDto.setName(user.getUserName());
+            return nameResponseDto;
+        }
+    }
 
-	public List<ResponseDto.UserIdResponseDto> searchUserId(String searchName) {
-		List<User> users = userRepository.findUserByUserNameOrNickname(searchName);
-		List<ResponseDto.UserIdResponseDto> resultList = new ArrayList<>();
+    public List<ResponseDto.UserIdResponseDto> searchUserId(String searchName) {
+        List<User> users = userRepository.findUserByUserNameOrNickname(searchName);
+        List<ResponseDto.UserIdResponseDto> resultList = new ArrayList<>();
 
-		if (users == null || users.isEmpty()) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		} else {
-			for (User user : users) {
-				ResponseDto.UserIdResponseDto userDto = new ResponseDto.UserIdResponseDto();
-				userDto.setUserId(user.getUserId());
-				userDto.setUserName(user.getUserName());
-				resultList.add(userDto);
-			}
-		}
+        if (users == null || users.isEmpty()) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        } else {
+            for (User user : users) {
+                ResponseDto.UserIdResponseDto userDto = new ResponseDto.UserIdResponseDto();
+                userDto.setUserId(user.getUserId());
+                userDto.setUserName(user.getUserName());
+                resultList.add(userDto);
+            }
+        }
 
-		return resultList;
-	}
+        return resultList;
+    }
 
-	public ResponseDto.TeamCodeResponseDto findTeamCode(Long userId) {
-		User user = userRepository.findByUserId(userId);
-		if (user == null) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		} else {
-			ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
-			teamCodeResponseDto.setTeamCode(user.getTeam().getTeamCode());
-			return teamCodeResponseDto;
-		}
-	}
+    public ResponseDto.TeamCodeResponseDto findTeamCode(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        } else {
+            ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
+            teamCodeResponseDto.setTeamCode(user.getTeam().getTeamCode());
+            return teamCodeResponseDto;
+        }
+    }
 
-	@Transactional
-	public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
-		String teamCode = saveTeam(registerAdminUserDto);
-		Team team = teamRepository.findTeamByTeamCode(teamCode);
+    @Transactional
+    public ResponseDto.TeamCodeResponseDto registerAdminUser(RegisterAdminUserDto registerAdminUserDto, Long userId) {
+        String teamCode = saveTeam(registerAdminUserDto);
+        Team team = teamRepository.findTeamByTeamCode(teamCode);
 
-		Optional<User> existingUser = userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
-		if (existingUser.isPresent()) {
-			throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
-		}
+        Optional<User> existingUser = userRepository.findUserByRoleAndTeam(Arrays.asList(ROLE_ADMIN, ROLE_USER), team);
+        if (existingUser.isPresent()) {
+            throw new CustomException(CustomError.ADMIN_TEAM_ALREADY_EXISTS);
+        }
 
-		User user = userRepository.findByUserId(userId);
-		if (user == null) {
-			// 사용자 정보가 없을 경우, 새로운 사용자 생성
-			user = createAdminUser(userId);
-		} else if (user.getRole().equals(ROLE_ADMIN)) {
-			throw new CustomException(CustomError.ADMIN_ALREADY_EXISTS);
-		}
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            // 사용자 정보가 없을 경우, 새로운 사용자 생성
+            user = createAdminUser(userId);
+        } else if (user.getRole().equals(ROLE_ADMIN)) {
+            throw new CustomException(CustomError.ADMIN_ALREADY_EXISTS);
+        }
 
-		user.registerInfo(registerAdminUserDto.getName(), team, ROLE_ADMIN);
+        user.registerInfo(registerAdminUserDto.getName(), team, ROLE_ADMIN);
 
-		log.info("TEAM = {}", team.getTeamName());
-		log.info("USER = {}", user.getRole());
+        log.info("TEAM = {}", team.getTeamName());
+        log.info("USER = {}", user.getRole());
 
-		ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
-		teamCodeResponseDto.setTeamCode(teamCode);
-		return teamCodeResponseDto;
-	}
+        ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
+        teamCodeResponseDto.setTeamCode(teamCode);
+        return teamCodeResponseDto;
+    }
 
-	private static String makeCode() {
-		String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-		Random random = new Random();
-		StringBuilder codeBuilder = new StringBuilder();
+    private static String makeCode() {
+        String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        Random random = new Random();
+        StringBuilder codeBuilder = new StringBuilder();
 
-		for (int i = 0; i < 6; i++) {
-			int index = random.nextInt(characters.length());
-			char randomChar = characters.charAt(index);
-			codeBuilder.append(randomChar);
-		}
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(characters.length());
+            char randomChar = characters.charAt(index);
+            codeBuilder.append(randomChar);
+        }
 
-		String code = codeBuilder.toString();
-		log.info("code -> {}", code);
-		return code;
-	}
+        String code = codeBuilder.toString();
+        log.info("code -> {}", code);
+        return code;
+    }
 
-	@Transactional
-	public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto, Long userId) {
-		Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
-		if (team == null) {
-			throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
-		}
-		log.info("TEAM = {}", team.getTeamName());
-		log.info("TEAM = {}", team.getTeamCode());
+    @Transactional
+    public ResponseDto.TeamCodeResponseDto registerUser(RegisterUserDto registerUserDto, Long userId) {
+        Team team = teamRepository.findTeamByTeamCode(registerUserDto.getTeamCode());
+        if (team == null) {
+            throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
+        }
+        log.info("TEAM = {}", team.getTeamName());
+        log.info("TEAM = {}", team.getTeamCode());
 
-		User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId);
 
-		if (user == null) {
-			// 사용자 정보가 없을 경우, 새로운 사용자 생성
-			user = createRoleUser(userId);
-		} else {
-			if (user.getRole().equals(ROLE_ADMIN)) {
-				throw new CustomException(CustomError.ADMIN_CANNOT_REGISTER_USER);
-			}
-		}
+        if (user == null) {
+            // 사용자 정보가 없을 경우, 새로운 사용자 생성
+            user = createRoleUser(userId);
+        } else {
+            if (user.getRole().equals(ROLE_ADMIN)) {
+                throw new CustomException(CustomError.ADMIN_CANNOT_REGISTER_USER);
+            }
+        }
 
-		user.registerInfo(registerUserDto.getName(), team, ROLE_USER);
-		ResponseDto.TeamCodeResponseDto teamCode = new ResponseDto.TeamCodeResponseDto();
-		teamCode.setTeamCode(team.getTeamCode());
-		return teamCode;
-	}
+        user.registerInfo(registerUserDto.getName(), team, ROLE_USER);
+        ResponseDto.TeamCodeResponseDto teamCode = new ResponseDto.TeamCodeResponseDto();
+        teamCode.setTeamCode(team.getTeamCode());
+        return teamCode;
+    }
 
-	@Transactional
-	public void updateTimeout(long userId, int timeout) {
-		User user = userRepository.findByUserId(userId);
-		if (user == null) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		}
-		
-		Team team = user.getTeam();
-		
-		team.setTimeout(timeout);
-	}
+    @Transactional
+    public void updateTimeout(long userId, int timeout) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        
+        Team team = user.getTeam();
+        
+        team.setTimeout(timeout);
+    }
 
-	public ResponseDto.TimeoutResponseDto getTimeout(long userId) {
-	    User user = userRepository.findByUserId(userId);
+    public ResponseDto.TimeoutResponseDto getTimeout(long userId) {
+        User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
@@ -202,9 +202,10 @@ public class UserService {
         timeoutResponseDto.setTimeout(user.getTeam().getTimeout());
 
         return timeoutResponseDto;
-	}
+    }
 
-	public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId, List<Long> userList) {
+    public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId,
+            List<Long> userList) {
         User createUser = userRepository.findByUserId(userId);
         if (createUser == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
@@ -212,15 +213,18 @@ public class UserService {
         int timeout = createUser.getTeam().getTimeout();
         String teamCode = createUser.getTeam().getTeamCode();
         StringBuilder sb = new StringBuilder();
-        sb.append(createUser.getUserName());
-        
+
         for (long u : userList) {
             User user = userRepository.findByUserId(u);
             if (user == null) {
                 throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
             }
 
-            sb.append(", ").append(user.getUserName());
+            if (sb.length() == 0) {
+                sb.append(user.getUserName());
+            } else {
+                sb.append(", ").append(user.getUserName());
+            }
         }
 
         CreateChatroomResponseDto chatroomResponseDto =
@@ -232,39 +236,39 @@ public class UserService {
 
 
         return chatroomResponseDto;
-	}
+    }
 
-	/**
-	 * 참가자 조회 API
-	 * @param userId user id
-	 * @return {@link TeammateResponseDto} list
-	 */
-	@Transactional(readOnly = true)
-	public List<TeammateResponseDto> getTeammates(Long userId) {
-		List<TeammateQueryDto> list = customUserRepository.selectTeammateByUserId(userId);
+    /**
+     * 참가자 조회 API
+     * @param userId user id
+     * @return {@link TeammateResponseDto} list
+     */
+    @Transactional(readOnly = true)
+    public List<TeammateResponseDto> getTeammates(Long userId) {
+        List<TeammateQueryDto> list = customUserRepository.selectTeammateByUserId(userId);
 
-		return list.stream()
-				.map(query -> TeammateResponseDto.builder()
-						.name(query.getName())
-						.nickname(query.getNickname())
-						.profileUrl(NicknameService.generateProfileUrl(query.getProfileImgCode()))
-						.userId(query.getUserId())
-						.build())
-				.collect(Collectors.toUnmodifiableList());
-	}
+        return list.stream()
+                .map(query -> TeammateResponseDto.builder()
+                        .name(query.getName())
+                        .nickname(query.getNickname())
+                        .profileUrl(NicknameService.generateProfileUrl(query.getProfileImgCode()))
+                        .userId(query.getUserId())
+                        .build())
+                .collect(Collectors.toUnmodifiableList());
+    }
 
-	public ChatRoomEnterResponseDto requiredEnterInfo(long userId) {
-		User searchUser = userRepository.findByUserId(userId);
-		if (searchUser == null) {
-			throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
-		}
+    public ChatRoomEnterResponseDto requiredEnterInfo(long userId) {
+        User searchUser = userRepository.findByUserId(userId);
+        if (searchUser == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
 
-		ChatRoomEnterResponseDto chatRoomEnterResponseDto =
-				ChatRoomEnterResponseDto.builder()
-						.userName(searchUser.getUserName())
-						.nickname(searchUser.getNickname())
-						.build();
+        ChatRoomEnterResponseDto chatRoomEnterResponseDto =
+                ChatRoomEnterResponseDto.builder()
+                        .userName(searchUser.getUserName())
+                        .nickname(searchUser.getNickname())
+                        .build();
 
-		return chatRoomEnterResponseDto;
-	}
+        return chatRoomEnterResponseDto;
+    }
 }
