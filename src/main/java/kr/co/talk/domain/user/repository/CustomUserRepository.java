@@ -2,6 +2,8 @@ package kr.co.talk.domain.user.repository;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.talk.domain.user.dto.EnterUserQueryDto;
+import kr.co.talk.domain.user.dto.QEnterUserQueryDto;
 import kr.co.talk.domain.user.dto.QTeammateQueryDto;
 import kr.co.talk.domain.user.dto.TeammateQueryDto;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,17 @@ public class CustomUserRepository {
                                 .where(user.userId.eq(userId))
                         )
                 )
+                .fetch();
+    }
+
+    public List<EnterUserQueryDto> selectEnterUserInfo(List<Long> userList) {
+        return queryFactory
+                .select(new QEnterUserQueryDto(
+                        user.userName,
+                        user.nickname,
+                        user.profileImgCode))
+                .from(user)
+                .where(user.userId.in(userList))
                 .fetch();
     }
 }
