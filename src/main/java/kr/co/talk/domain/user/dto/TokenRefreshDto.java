@@ -1,13 +1,12 @@
 package kr.co.talk.domain.user.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 /**
  * 토큰 refresh 요청 시
  */
 @Builder
-@Getter
+@Data
 public class TokenRefreshDto {
     private String accessToken;
 }
