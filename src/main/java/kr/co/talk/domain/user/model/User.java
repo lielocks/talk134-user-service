@@ -44,7 +44,7 @@ public class User {
 
     private int statusStress;
 
-    private String statusKeyword;
+    private int statusStable;
 
     @Setter
     private String profileImgCode;
@@ -53,7 +53,8 @@ public class User {
     @Column(updatable = false)
     private Timestamp createTime;
 
-    private Timestamp lastLoginTime;
+    private Timestamp statusChangeTime;
+    
 
     public enum Role {
         ROLE_USER, ROLE_ADMIN

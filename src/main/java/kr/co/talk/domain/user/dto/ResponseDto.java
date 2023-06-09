@@ -48,4 +48,17 @@ public class ResponseDto {
         private String userName;
         private String profileUrl;
     }
+
+    @Data
+    @Builder
+    public static class UserStatusDto {
+        private boolean isToday; // 오늘 status update 된적있는지
+        private String name;
+        private String nickname;
+        private int statusEnergy;
+        private int statusRelation;
+        private int statusStress;
+        private int statusStable;
+    }
+
 }
