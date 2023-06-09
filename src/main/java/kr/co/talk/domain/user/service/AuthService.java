@@ -1,6 +1,9 @@
 package kr.co.talk.domain.user.service;
 
 import kr.co.talk.domain.user.dto.AuthTokenDto;
+import kr.co.talk.domain.user.dto.LoginDto;
+import kr.co.talk.domain.user.model.User;
+import kr.co.talk.domain.user.repository.UserRepository;
 import kr.co.talk.global.exception.CustomException;
 import kr.co.talk.domain.user.repository.AuthTokenRepository;
 import kr.co.talk.global.config.jwt.JwtTokenProvider;
@@ -11,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static kr.co.talk.domain.user.model.User.Role.ROLE_ADMIN;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     private final AuthTokenRepository authTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
-
+    private final UserRepository userRepository;
 
     // 토큰 정보를 db에 저장
 
@@ -52,7 +57,7 @@ public class AuthService {
 
     //리프레스 토큰으로 액세스 토큰 재발급
     @Transactional
-    public AuthTokenDto tokenRefresh(String refreshToken) {
+    public LoginDto tokenRefresh(String refreshToken) {
         //refreshToken 유효성 체크
         jwtTokenProvider.validRefreshToken(refreshToken);
 
@@ -65,11 +70,20 @@ public class AuthService {
         String newAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(authToken.getUserId()));
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
+        User user = userRepository.findByUserId(authToken.getUserId());
+
         //기존 인증 정보 삭제 후 새로운 인증 정보 저장
         authTokenRepository.delete(authToken);
         authTokenRepository.save(new AuthToken(newRefreshToken, authToken.getUserId()));
 
-        return new AuthTokenDto(newAccessToken, newRefreshToken);
+        return LoginDto.builder()
+                .userId(user.getUserId())
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .nickname(user.getNickname())
+                .teamCode(user.getTeam() != null ? user.getTeam().getTeamCode() : null)
+                .admin(user.getRole().equals(ROLE_ADMIN))
+                .build();
 
     }
 }
