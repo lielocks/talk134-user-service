@@ -44,9 +44,8 @@ public class AuthController {
     @PostMapping("/refresh")
     public TokenRefreshDto tokenRefresh(
             @CookieValue(Constants.REFRESH_TOKEN_COOKIE_NAME) Cookie refreshTokenCookie,
-            @RequestBody TokenRefreshDto requestDto,
             HttpServletResponse response) {
-        var token = authService.tokenRefresh(requestDto.getAccessToken(), refreshTokenCookie.getValue());
+        var token = authService.tokenRefresh(refreshTokenCookie.getValue());
         ResponseCookie cookie = ResponseCookie.from(Constants.REFRESH_TOKEN_COOKIE_NAME, token.getRefreshToken())
                 .maxAge(Constants.REFRESH_TOKEN_TTL_SECONDS)
                 .path("/")
