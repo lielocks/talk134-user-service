@@ -42,7 +42,7 @@ public class AuthController {
 
     //토큰 재발급
     @PostMapping("/refresh")
-    public TokenRefreshDto tokenRefresh(
+    public LoginDto tokenRefresh(
             @CookieValue(Constants.REFRESH_TOKEN_COOKIE_NAME) Cookie refreshTokenCookie,
             HttpServletResponse response) {
         var token = authService.tokenRefresh(refreshTokenCookie.getValue());
@@ -54,9 +54,7 @@ public class AuthController {
                 .httpOnly(true)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        return TokenRefreshDto.builder()
-                .accessToken(token.getAccessToken())
-                .build();
+        return token;
     }
 
 //    //로그아웃
