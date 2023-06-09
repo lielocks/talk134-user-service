@@ -273,8 +273,9 @@ public class UserService {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
 
-                return list.stream().
-                        map(dto -> ChatRoomEnterResponseDto.builder()
+                return list.stream()
+                        .map(dto -> ChatRoomEnterResponseDto.builder()
+                                .userId(dto.getUserId())
                                 .userName(dto.getName())
                                 .nickname(dto.getNickname())
                                 .profileUrl(NicknameService.generateProfileUrl(dto.getProfileImgCode()))

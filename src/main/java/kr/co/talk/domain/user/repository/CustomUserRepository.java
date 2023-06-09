@@ -39,6 +39,7 @@ public class CustomUserRepository {
     public List<EnterUserQueryDto> selectEnterUserInfo(List<Long> userList) {
         return queryFactory
                 .select(new QEnterUserQueryDto(
+                        user.userId,
                         user.userName,
                         user.nickname,
                         user.profileImgCode))
