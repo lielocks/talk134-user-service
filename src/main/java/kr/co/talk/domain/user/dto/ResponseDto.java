@@ -46,5 +46,6 @@ public class ResponseDto {
     public static class ChatRoomEnterResponseDto {
         private String nickname;
         private String userName;
+        private String profileUrl;
     }
 }

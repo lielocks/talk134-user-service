@@ -98,8 +98,8 @@ public class UserController {
 	}
 
 	@UserId
-	@GetMapping("/enter-info")
-	public ChatRoomEnterResponseDto findEnterInfo(@RequestHeader(value = "userId") long userId) {
-		return userService.requiredEnterInfo(userId);
+	@GetMapping("/enter-info/{userList}")
+	public List<ChatRoomEnterResponseDto> findEnterInfo(@RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
+		return userService.requiredEnterInfo(userList);
 	}
 }

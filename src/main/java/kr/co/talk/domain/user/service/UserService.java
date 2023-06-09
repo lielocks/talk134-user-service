@@ -267,18 +267,18 @@ public class UserService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public ChatRoomEnterResponseDto requiredEnterInfo(long userId) {
-        User searchUser = userRepository.findByUserId(userId);
-        if (searchUser == null) {
+    public List<ChatRoomEnterResponseDto> requiredEnterInfo(List<Long> userList) {
+        List<EnterUserQueryDto> list = customUserRepository.selectEnterUserInfo(userList);
+        if (list.size() < 1) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
 
-        ChatRoomEnterResponseDto chatRoomEnterResponseDto =
-                ChatRoomEnterResponseDto.builder()
-                        .userName(searchUser.getUserName())
-                        .nickname(searchUser.getNickname())
-                        .build();
-
-        return chatRoomEnterResponseDto;
+                return list.stream().
+                        map(dto -> ChatRoomEnterResponseDto.builder()
+                                .userName(dto.getName())
+                                .nickname(dto.getNickname())
+                                .profileUrl(NicknameService.generateProfileUrl(dto.getProfileImgCode()))
+                                .build())
+                        .collect(Collectors.toList());
     }
 }
