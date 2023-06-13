@@ -44,6 +44,7 @@ public class ResponseDto {
     @Data
     @Builder
     public static class ChatRoomEnterResponseDto {
+        private Long userId;
         private String nickname;
         private String userName;
         private String profileUrl;
