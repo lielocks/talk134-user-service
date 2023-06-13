@@ -120,4 +120,17 @@ public class UserController {
             @RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
         return userService.requiredEnterInfo(userList);
     }
+    
+    /**
+     * chat service에서 필수형 feedback update request
+     * 
+     * @param userId
+     * @param updateRequestStatusDto
+     * @return
+     */
+    @PutMapping("/user/changeStatus/{userId}")
+    public ResponseEntity<?> changeStatus(@PathVariable("userId") long userId, ResponseDto.UserStatusDto updateRequestStatusDto) {
+        userService.changeStatus(userId, updateRequestStatusDto);
+        return ResponseEntity.ok().build();
+    }
 }

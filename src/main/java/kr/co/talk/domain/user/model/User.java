@@ -2,7 +2,7 @@ package kr.co.talk.domain.user.model;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
+import kr.co.talk.domain.user.dto.ResponseDto;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -54,6 +54,13 @@ public class User {
     private Timestamp createTime;
 
     private Timestamp statusChangeTime;
+    
+    public void setStatus(ResponseDto.UserStatusDto statusDto) {
+        this.statusEnergy = statusDto.getStatusEnergy();
+        this.statusRelation = statusDto.getStatusRelation();
+        this.statusStress = statusDto.getStatusStress();
+        this.statusStable = statusDto.getStatusStable();
+    }
     
 
     public enum Role {

@@ -316,4 +316,21 @@ public class UserService {
                                 .build())
                         .collect(Collectors.toList());
     }
+    
+    
+    /**
+     * user의 status값 update
+     * 
+     * @param userId
+     * @param updateRequestStatusDto
+     */
+    @Transactional
+    public void changeStatus(long userId,  ResponseDto.UserStatusDto updateRequestStatusDto) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        
+        user.setStatus(updateRequestStatusDto);
+    }
 }
