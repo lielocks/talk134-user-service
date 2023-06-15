@@ -128,8 +128,8 @@ public class UserController {
      * @param updateRequestStatusDto
      * @return
      */
-    @PutMapping("/user/changeStatus/{userId}")
-    public ResponseEntity<?> changeStatus(@PathVariable("userId") long userId, ResponseDto.UserStatusDto updateRequestStatusDto) {
+    @PutMapping("/changeStatus/{userId}")
+    public ResponseEntity<?> changeStatus(@PathVariable("userId") long userId, @RequestBody ResponseDto.UserStatusDto updateRequestStatusDto) {
         userService.changeStatus(userId, updateRequestStatusDto);
         return ResponseEntity.ok().build();
     }

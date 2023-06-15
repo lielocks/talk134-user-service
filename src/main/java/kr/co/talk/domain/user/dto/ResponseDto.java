@@ -1,5 +1,6 @@
 package kr.co.talk.domain.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,6 +59,8 @@ public class ResponseDto {
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UserStatusDto {
         private boolean isToday; // 오늘 status update 된적있는지
         private String name;

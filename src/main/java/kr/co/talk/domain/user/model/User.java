@@ -60,6 +60,7 @@ public class User {
         this.statusRelation = statusDto.getStatusRelation();
         this.statusStress = statusDto.getStatusStress();
         this.statusStable = statusDto.getStatusStable();
+        this.statusChangeTime =  new Timestamp(System.currentTimeMillis());
     }
     
 
