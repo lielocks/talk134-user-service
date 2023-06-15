@@ -18,6 +18,12 @@ public class ResponseDto {
     public static class TeamCodeResponseDto {
         private String teamCode;
     }
+    
+    @Data
+    public static class FindChatroomResponseDto {
+        private String teamCode;
+        private String userRole;
+    }
 
     @Data
     public static class TimeoutResponseDto {

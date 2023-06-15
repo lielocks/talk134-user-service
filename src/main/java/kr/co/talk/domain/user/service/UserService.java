@@ -99,15 +99,16 @@ public class UserService {
         return resultList;
     }
 
-    public ResponseDto.TeamCodeResponseDto findTeamCode(Long userId) {
+    public ResponseDto.FindChatroomResponseDto findChatroomInfo(Long userId) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         } else {
-            ResponseDto.TeamCodeResponseDto teamCodeResponseDto =
-                    new ResponseDto.TeamCodeResponseDto();
-            teamCodeResponseDto.setTeamCode(user.getTeam().getTeamCode());
-            return teamCodeResponseDto;
+            ResponseDto.FindChatroomResponseDto chatroomResponseDto =
+                    new ResponseDto.FindChatroomResponseDto();
+            chatroomResponseDto.setTeamCode(user.getTeam().getTeamCode());
+            chatroomResponseDto.setUserRole(user.getRole().toString());
+            return chatroomResponseDto;
         }
     }
 

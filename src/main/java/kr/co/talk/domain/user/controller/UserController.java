@@ -43,9 +43,9 @@ public class UserController {
         return userService.nameFromUser(userId);
     }
 
-    @GetMapping("/teamCode/{userId}")
-    public ResponseDto.TeamCodeResponseDto getUserTeamCode(@PathVariable("userId") Long userId) {
-        return userService.findTeamCode(userId);
+    @GetMapping("/findChatroomInfo/{userId}")
+    public ResponseDto.FindChatroomResponseDto findChatroomInfo(@PathVariable("userId") Long userId) {
+        return userService.findChatroomInfo(userId);
     }
 
     @GetMapping("/id/{teamCode}/{searchName}")
