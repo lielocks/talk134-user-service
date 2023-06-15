@@ -102,4 +102,9 @@ public class UserController {
 	public List<ChatRoomEnterResponseDto> findEnterInfo(@RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
 		return userService.requiredEnterInfo(userList);
 	}
+
+	@GetMapping("/img-code")
+	public String findEnterInfo(@RequestHeader(value = "userId") long userId) {
+		return userService.sendUserImgCode(userId);
+	}
 }
