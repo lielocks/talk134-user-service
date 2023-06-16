@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
+import kr.co.talk.domain.user.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +16,6 @@ import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
-import kr.co.talk.domain.user.repository.CustomUserRepository;
-import kr.co.talk.domain.user.repository.TeamRepository;
-import kr.co.talk.domain.user.repository.UserRepository;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -333,5 +331,11 @@ public class UserService {
         }
         
         user.setStatus(updateRequestStatusDto);
+}
+
+    public String sendUserImgCode(long userId) {
+        User user = userRepository.findByUserId(userId);
+        String profileImgCode = user.getProfileImgCode();
+        return profileImgCode.substring(profileImgCode.length() - 2);
     }
 }

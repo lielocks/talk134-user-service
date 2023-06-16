@@ -114,12 +114,6 @@ public class UserController {
         return userService.getTeammates(userId);
     }
 
-    @UserId
-    @GetMapping("/enter-info/{userList}")
-    public List<ChatRoomEnterResponseDto> findEnterInfo(
-            @RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
-        return userService.requiredEnterInfo(userList);
-    }
     
     /**
      * chat service에서 필수형 feedback update request
@@ -133,4 +127,15 @@ public class UserController {
         userService.changeStatus(userId, updateRequestStatusDto);
         return ResponseEntity.ok().build();
     }
+
+	@UserId
+	@GetMapping("/enter-info/{userList}")
+	public List<ChatRoomEnterResponseDto> findEnterInfo(@RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
+		return userService.requiredEnterInfo(userList);
+	}
+
+	@GetMapping("/img-code")
+	public String findEnterInfo(@RequestHeader(value = "userId") long userId) {
+		return userService.sendUserImgCode(userId);
+	}
 }
