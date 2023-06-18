@@ -1,5 +1,6 @@
 package kr.co.talk.domain.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,12 @@ public class ResponseDto {
     @Data
     public static class TeamCodeResponseDto {
         private String teamCode;
+    }
+    
+    @Data
+    public static class FindChatroomResponseDto {
+        private String teamCode;
+        private String userRole;
     }
 
     @Data
@@ -49,4 +56,19 @@ public class ResponseDto {
         private String userName;
         private String profileUrl;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserStatusDto {
+        private boolean isToday; // 오늘 status update 된적있는지
+        private String name;
+        private String nickname;
+        private int statusEnergy;
+        private int statusRelation;
+        private int statusStress;
+        private int statusStable;
+    }
+
 }

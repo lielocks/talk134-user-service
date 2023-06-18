@@ -1,9 +1,10 @@
 package kr.co.talk.domain.user.service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
-import kr.co.talk.domain.user.model.NicknameMap;
 import kr.co.talk.domain.user.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +20,6 @@ import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.*;
 import java.util.stream.Collectors;
 
 import static kr.co.talk.domain.user.model.User.Role.ROLE_ADMIN;
@@ -98,15 +97,16 @@ public class UserService {
         return resultList;
     }
 
-    public ResponseDto.TeamCodeResponseDto findTeamCode(Long userId) {
+    public ResponseDto.FindChatroomResponseDto findChatroomInfo(Long userId) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         } else {
-            ResponseDto.TeamCodeResponseDto teamCodeResponseDto =
-                    new ResponseDto.TeamCodeResponseDto();
-            teamCodeResponseDto.setTeamCode(user.getTeam().getTeamCode());
-            return teamCodeResponseDto;
+            ResponseDto.FindChatroomResponseDto chatroomResponseDto =
+                    new ResponseDto.FindChatroomResponseDto();
+            chatroomResponseDto.setTeamCode(user.getTeam().getTeamCode());
+            chatroomResponseDto.setUserRole(user.getRole().toString());
+            return chatroomResponseDto;
         }
     }
 
@@ -209,6 +209,42 @@ public class UserService {
 
         return timeoutResponseDto;
     }
+    
+    public ResponseDto.UserStatusDto getUserStatus(long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+
+        if (user.getStatusChangeTime()!=null && isToday(user.getStatusChangeTime())) {
+            // status가 오늘 업데이트가 한번이라도 되었으면 기존 값 리턴
+            return ResponseDto.UserStatusDto.builder()
+                    .isToday(true)
+                    .name(user.getUserName())
+                    .nickname(user.getNickname())
+                    .statusEnergy(user.getStatusEnergy())
+                    .statusRelation(user.getStatusRelation())
+                    .statusStable(user.getStatusStable())
+                    .statusStress(user.getStatusStress())
+                    .build();
+        }
+
+        return ResponseDto.UserStatusDto.builder()
+                .name(user.getUserName())
+                .nickname(user.getNickname())
+                .build();
+    }
+
+    public boolean isToday(Timestamp currentTime) {
+        Date currentDate = new Date(currentTime.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDateString = sdf.format(currentDate);
+
+        Date today = new Date();
+        String todayDateString = sdf.format(today);
+
+        return currentDateString.equals(todayDateString);
+    }
 
     public ResponseDto.CreateChatroomResponseDto requiredCreateChatroomInfo(long userId,
                                                                             List<Long> userList) {
@@ -279,6 +315,23 @@ public class UserService {
                                 .build())
                         .collect(Collectors.toList());
     }
+    
+    
+    /**
+     * user의 status값 update
+     * 
+     * @param userId
+     * @param updateRequestStatusDto
+     */
+    @Transactional
+    public void changeStatus(long userId,  ResponseDto.UserStatusDto updateRequestStatusDto) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        
+        user.setStatus(updateRequestStatusDto);
+}
 
     public String sendUserImgCode(long userId) {
         User user = userRepository.findByUserId(userId);
