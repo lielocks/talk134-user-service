@@ -14,6 +14,7 @@ import kr.co.talk.domain.user.dto.RegisterUserDto;
 import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.global.exception.CustomError;
@@ -337,5 +338,15 @@ public class UserService {
         User user = userRepository.findByUserId(userId);
         String profileImgCode = user.getProfileImgCode();
         return profileImgCode.substring(profileImgCode.length() - 2);
+    }
+    
+    public TeamCodeResponseDto findTeamCode(long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        TeamCodeResponseDto codeResponseDto = new TeamCodeResponseDto();
+        codeResponseDto.setTeamCode(user.getTeam().getTeamCode());
+        return codeResponseDto;
     }
 }
