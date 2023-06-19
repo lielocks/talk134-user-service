@@ -2,6 +2,7 @@ package kr.co.talk.domain.user.controller;
 
 import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
 import kr.co.talk.domain.user.service.NicknameService;
 import kr.co.talk.domain.user.service.UserService;
 import kr.co.talk.global.aspect.UserId;
@@ -126,6 +127,11 @@ public class UserController {
     public ResponseEntity<?> changeStatus(@PathVariable("userId") long userId, @RequestBody ResponseDto.UserStatusDto updateRequestStatusDto) {
         userService.changeStatus(userId, updateRequestStatusDto);
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/findTeamCode/{userId}")
+    public TeamCodeResponseDto findTeamCode(@PathVariable("userId") long userId) {
+        return userService.findTeamCode(userId);
     }
 
 	@UserId
