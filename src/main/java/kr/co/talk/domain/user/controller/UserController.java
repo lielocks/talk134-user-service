@@ -3,6 +3,7 @@ package kr.co.talk.domain.user.controller;
 import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
 import kr.co.talk.domain.user.service.NicknameService;
 import kr.co.talk.domain.user.service.UserService;
 import kr.co.talk.global.aspect.UserId;
@@ -143,5 +144,10 @@ public class UserController {
 	@GetMapping("/img-code")
 	public String findEnterInfo(@RequestHeader(value = "userId") long userId) {
 		return userService.sendUserImgCode(userId);
+	}
+	
+	@GetMapping("/userName/nickname/{userIds}")
+	public List<UserNameResponseDto> userNameNickname(@PathVariable List<Long> userIds){
+	    return userService.userNameNickname(userIds);
 	}
 }
