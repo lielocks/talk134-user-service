@@ -150,4 +150,9 @@ public class UserController {
 	public List<UserNameResponseDto> userNameNickname(@PathVariable List<Long> userIds){
 	    return userService.userNameNickname(userIds);
 	}
+
+    @PostMapping("/logout")
+    public void logout(@RequestHeader(value = "userId") long userId) {
+        userService.logout(userId);
+    }
 }

@@ -35,6 +35,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final CustomUserRepository customUserRepository;
+    private final AuthTokenRepository authTokenRepository;
 
     @Transactional
     public User createUser(SocialKakaoDto.UserInfo userInfoDto) {
@@ -369,5 +370,13 @@ public class UserService {
         
         return list;
         
+    }
+
+    /**
+     * redis에 있는 리프레쉬 토큰을 삭제해준다. 재발급을 막기 위함.
+     * @param userId user id
+     */
+    public void logout(long userId) {
+        authTokenRepository.deleteAllByUserId(userId);
     }
 }
