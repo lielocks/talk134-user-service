@@ -15,6 +15,7 @@ import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.global.exception.CustomError;
@@ -348,5 +349,25 @@ public class UserService {
         TeamCodeResponseDto codeResponseDto = new TeamCodeResponseDto();
         codeResponseDto.setTeamCode(user.getTeam().getTeamCode());
         return codeResponseDto;
+    }
+    
+    public List<UserNameResponseDto> userNameNickname(List<Long> userIds) {
+        List<UserNameResponseDto> list = new ArrayList<>();
+
+        userIds.forEach(uid -> {
+            User user = userRepository.findByUserId(uid);
+            if (user == null) {
+                throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+            }
+            
+            list.add(UserNameResponseDto.builder()
+                    .userId(uid)
+                    .name(user.getUserName())
+                    .nickname(user.getNickname())
+                    .build());
+        });
+        
+        return list;
+        
     }
 }
