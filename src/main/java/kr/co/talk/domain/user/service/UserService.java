@@ -376,7 +376,12 @@ public class UserService {
      * redis에 있는 리프레쉬 토큰을 삭제해준다. 재발급을 막기 위함.
      * @param userId user id
      */
+    @Transactional
     public void logout(long userId) {
-        authTokenRepository.deleteByUserId(userId);
+        var token = authTokenRepository.findByUserId(userId);
+        if (token == null) {
+            throw new CustomException(CustomError.LOGOUT_FAILED);
+        }
+        authTokenRepository.deleteById(token.getRefreshToken());
     }
 }
