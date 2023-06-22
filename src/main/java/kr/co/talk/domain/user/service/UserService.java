@@ -377,6 +377,6 @@ public class UserService {
      * @param userId user id
      */
     public void logout(long userId) {
-        authTokenRepository.deleteAllByUserId(userId);
+        authTokenRepository.deleteByUserId(userId);
     }
 }
