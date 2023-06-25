@@ -5,6 +5,7 @@ import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
 import kr.co.talk.domain.user.service.NicknameService;
+import kr.co.talk.domain.user.service.ProfileService;
 import kr.co.talk.domain.user.service.UserService;
 import kr.co.talk.global.aspect.UserId;
 import kr.co.talk.global.exception.CustomError;
@@ -24,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final NicknameService nicknameService;
+    private final ProfileService profileService;
 
     @PostMapping("/admin/register")
     public ResponseDto.TeamCodeResponseDto registerAdminUser(
@@ -59,13 +61,13 @@ public class UserController {
 
     /**
      * 대화방 timeout 설정 변경
-     * 
+     *
      * @param timeout
      * @return
      */
     @PutMapping("/update-timeout/{timeOut}")
     public ResponseEntity<?> updateTimeout(@RequestHeader(value = "userId") Long userId,
-            @PathVariable(name = "timeOut") int timeout) {
+                                           @PathVariable(name = "timeOut") int timeout) {
         userService.updateTimeout(userId, timeout);
         return ResponseEntity.ok().build();
     }
@@ -77,8 +79,8 @@ public class UserController {
 
     /**
      * user의 status값 리턴
-     * chat-service에서 호출 
-     * 
+     * chat-service에서 호출
+     *
      * @param userId
      * @return
      */
@@ -89,19 +91,19 @@ public class UserController {
 
     /**
      * chat-service에서 호출하는 api create chatroom시 필요한 dto response
-     * 
+     *
      * @param userId : chatroom 생성자, userList: 생성자가 고른 userIds
      * @return
      */
     @PostMapping("/required-create-chatroom-info/{userId}")
     public ResponseEntity<?> getTimeout(@PathVariable(value = "userId") long userId,
-            @RequestBody List<Long> userList) {
+                                        @RequestBody List<Long> userList) {
         return ResponseEntity.ok(userService.requiredCreateChatroomInfo(userId, userList));
     }
 
     @RequestMapping(value = "/nickname", method = {RequestMethod.POST, RequestMethod.PUT})
     public NicknameResponseDto createNickname(@RequestHeader(value = "userId") Long userId,
-            @RequestBody NicknameRequestDto requestDto) {
+                                              @RequestBody NicknameRequestDto requestDto) {
         if (requestDto.getNameCode().size() != 3) {
             throw new CustomException(CustomError.NAMECODE_SIZE_NOT_3);
         }
@@ -116,10 +118,10 @@ public class UserController {
         return userService.getTeammates(userId);
     }
 
-    
+
     /**
      * chat service에서 필수형 feedback update request
-     * 
+     *
      * @param userId
      * @param updateRequestStatusDto
      * @return
@@ -129,31 +131,36 @@ public class UserController {
         userService.changeStatus(userId, updateRequestStatusDto);
         return ResponseEntity.ok().build();
     }
-    
+
     @GetMapping("/findTeamCode/{userId}")
     public TeamCodeResponseDto findTeamCode(@PathVariable("userId") long userId) {
         return userService.findTeamCode(userId);
     }
 
-	@UserId
-	@GetMapping("/enter-info/{userList}")
-	public List<ChatRoomEnterResponseDto> findEnterInfo(@RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
-		return userService.requiredEnterInfo(userList);
-	}
+    @UserId
+    @GetMapping("/enter-info/{userList}")
+    public List<ChatRoomEnterResponseDto> findEnterInfo(@RequestHeader(value = "userId") long userId, @PathVariable List<Long> userList) {
+        return userService.requiredEnterInfo(userList);
+    }
 
-	@GetMapping("/img-code")
-	public String findEnterInfo(@RequestHeader(value = "userId") long userId) {
-		return userService.sendUserImgCode(userId);
-	}
-	
-	@GetMapping("/userName/nickname/{userIds}")
-	public List<UserNameResponseDto> userNameNickname(@PathVariable List<Long> userIds){
-	    return userService.userNameNickname(userIds);
-	}
+    @GetMapping("/img-code")
+    public String findEnterInfo(@RequestHeader(value = "userId") long userId) {
+        return userService.sendUserImgCode(userId);
+    }
+
+    @GetMapping("/userName/nickname/{userIds}")
+    public List<UserNameResponseDto> userNameNickname(@PathVariable List<Long> userIds){
+        return userService.userNameNickname(userIds);
+    }
 
     @PostMapping("/logout")
     public void logout(@RequestHeader(value = "userId") long userId) {
         userService.logout(userId);
+    }
+
+    @GetMapping("/profile")
+    public UserProfileDto profile(@RequestHeader(value = "userId") long userId) {
+        return profileService.getProfile(userId);
     }
 
     @GetMapping("/team/profile-code")

@@ -10,6 +10,7 @@ public enum CustomError {
     REFRESH_TOKEN_INVALID(1010,"유효하지 않은 재발급 토큰입니다.",HttpStatus.UNAUTHORIZED.value()),
     REFRESH_TOKEN_EXPIRED(1011,"재발급 토큰이 만료되었습니다",HttpStatus.UNAUTHORIZED.value()),
     AUTH_TOKEN_CREATE_FAIL(1020,"토큰 발급에 실패했습니다.",HttpStatus.BAD_REQUEST.value()),
+    LOGOUT_FAILED(1021, "로그아웃에 실패했습니다.", HttpStatus.BAD_REQUEST.value()),
 
     //회원 등록
     TEAM_CODE_NOT_FOUND(1030, "등록되지 않은 팀코드입니다.", HttpStatus.NOT_FOUND.value()),
