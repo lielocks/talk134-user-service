@@ -1,10 +1,6 @@
 package kr.co.talk.domain.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 
 @Data
 @NoArgsConstructor
