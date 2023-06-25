@@ -155,4 +155,9 @@ public class UserController {
     public void logout(@RequestHeader(value = "userId") long userId) {
         userService.logout(userId);
     }
+
+    @GetMapping("/team/profile-code")
+    public List<String> teamProfileCode(@RequestHeader long userId) {
+        return userService.profileCodes(userId);
+    }
 }

@@ -23,6 +23,7 @@ public class Team {
     private int timeout;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<User> users;
 
 }

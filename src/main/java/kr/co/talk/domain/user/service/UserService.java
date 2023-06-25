@@ -379,4 +379,11 @@ public class UserService {
     public void logout(long userId) {
         authTokenRepository.deleteByUserId(userId);
     }
+
+    public List<String> profileCodes(long userId) {
+        String teamCode = userRepository.findByUserId(userId).getTeam().getTeamCode();
+        Team team = teamRepository.findTeamByTeamCode(teamCode);
+        List<User> userByTeamId = userRepository.findUserByTeamId(team.getId());
+        return userByTeamId.stream().map(User::getProfileImgCode).collect(Collectors.toList());
+    }
 }
