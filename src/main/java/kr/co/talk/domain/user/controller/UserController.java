@@ -163,8 +163,8 @@ public class UserController {
         return profileService.getProfile(userId);
     }
 
-    @GetMapping("/team/profile-code")
-    public List<String> teamProfileCode(@RequestHeader long userId) {
-        return userService.profileCodes(userId);
+    @GetMapping("/team/profile-code/{teamCode}")
+    public List<String> teamProfileCode(@PathVariable String teamCode) {
+        return userService.profileCodes(teamCode);
     }
 }

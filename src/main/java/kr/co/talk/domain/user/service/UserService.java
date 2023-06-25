@@ -385,8 +385,7 @@ public class UserService {
         authTokenRepository.deleteById(token.getRefreshToken());
     }
 
-    public List<String> profileCodes(long userId) {
-        String teamCode = userRepository.findByUserId(userId).getTeam().getTeamCode();
+    public List<String> profileCodes(String teamCode) {
         Team team = teamRepository.findTeamByTeamCode(teamCode);
         List<User> userByTeamId = userRepository.findUserByTeamId(team.getId());
         return userByTeamId.stream().map(User::getProfileImgCode).collect(Collectors.toList());
