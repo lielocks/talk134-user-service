@@ -5,6 +5,7 @@ import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
 import kr.co.talk.domain.user.service.NicknameService;
+import kr.co.talk.domain.user.service.ProfileService;
 import kr.co.talk.domain.user.service.UserService;
 import kr.co.talk.global.aspect.UserId;
 import kr.co.talk.global.exception.CustomError;
@@ -24,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final NicknameService nicknameService;
+    private final ProfileService profileService;
 
     @PostMapping("/admin/register")
     public ResponseDto.TeamCodeResponseDto registerAdminUser(
@@ -156,8 +158,13 @@ public class UserController {
         userService.logout(userId);
     }
 
-    @GetMapping("/team/profile-code")
-    public List<String> teamProfileCode(@RequestHeader long userId) {
-        return userService.profileCodes(userId);
-    }
+  @GetMapping("/profile")
+  public UserProfileDto profile(@RequestHeader(value = "userId") long userId) {
+      return profileService.getProfile(userId);
+  }
+  
+  @GetMapping("/team/profile-code")
+  public List<String> teamProfileCode(@RequestHeader long userId) {
+      return userService.profileCodes(userId);
+  }
 }

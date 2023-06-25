@@ -5,5 +5,4 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AuthTokenRepository extends CrudRepository<AuthToken,String> {
     AuthToken findByUserId(Long userId);
-    void deleteByUserId(Long userId);
 }
