@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -161,6 +162,11 @@ public class UserController {
     @GetMapping("/profile")
     public UserProfileDto profile(@RequestHeader(value = "userId") long userId) {
         return profileService.getProfile(userId);
+    }
+
+    @GetMapping("/profiles")
+    public List<UserProfileDto> getProfileList(Set<Long> userIds) {
+        return profileService.getProfileList(userIds);
     }
 
     @GetMapping("/team/profile-code/{teamCode}")
