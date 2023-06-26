@@ -1,5 +1,6 @@
 package kr.co.talk.domain.user.service;
 
+import kr.co.talk.domain.user.dto.SimpleUserProfileDto;
 import kr.co.talk.domain.user.dto.UserProfileDto;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.domain.user.repository.ProfileRepository;
@@ -32,10 +33,10 @@ public class ProfileService {
                 .build();
     }
 
-    public List<UserProfileDto> getProfileList(Set<Long> userIds) {
+    public List<SimpleUserProfileDto> getProfileList(Set<Long> userIds) {
         return userRepository.findUsersByUserIdIn(userIds)
-                .stream().map(user -> UserProfileDto.builder()
-                        .name(user.getUserName())
+                .stream().map(user -> SimpleUserProfileDto.builder()
+                        .userId(user.getUserId())
                         .nickname(user.getNickname())
                         .profileUrl(NicknameService.generateProfileUrl(user.getProfileImgCode()))
                         .build())

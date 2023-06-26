@@ -15,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -165,8 +167,11 @@ public class UserController {
     }
 
     @GetMapping("/profiles")
-    public List<UserProfileDto> getProfileList(Set<Long> userIds) {
-        return profileService.getProfileList(userIds);
+    public List<SimpleUserProfileDto> getProfileList(String userIds) {
+        var userIdSet = Arrays.stream(userIds.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toSet());
+        return profileService.getProfileList(userIdSet);
     }
 
     @GetMapping("/team/profile-code/{teamCode}")
