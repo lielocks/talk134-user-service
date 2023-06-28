@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User,Long> {
     User findByUserUid(String userUid);
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findUserByUserNameOrNickname(@Param("searchName") String searchName);
     
     List<User> findUserByTeamId(long teamId);
+
+    List<User> findUsersByUserIdIn(Set<Long> userIds);
 }
