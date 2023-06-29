@@ -77,4 +77,13 @@ public class ResponseDto {
         String nickname;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AdminSearchUserIdResponseDto {
+        String name;
+        String nickname;
+    }
+
 }

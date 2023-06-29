@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.*;
 import kr.co.talk.domain.user.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +13,6 @@ import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
 import kr.co.talk.domain.user.dto.RegisterUserDto;
 import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.dto.*;
-import kr.co.talk.domain.user.dto.ResponseDto.CreateChatroomResponseDto;
-import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
-import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
 import kr.co.talk.global.exception.CustomError;
@@ -389,5 +386,20 @@ public class UserService {
         Team team = teamRepository.findTeamByTeamCode(teamCode);
         List<User> userByTeamId = userRepository.findUserByTeamId(team.getId());
         return userByTeamId.stream().map(User::getProfileImgCode).collect(Collectors.toList());
+    }
+
+    public AdminSearchUserIdResponseDto adminSearchUserId(long userId, long searchId) {
+        User adminUser = userRepository.findByUserId(userId);
+        if (adminUser == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        } if (!adminUser.getRole().equals(ROLE_ADMIN)) {
+            throw new CustomException(CustomError.IS_NOT_ADMIN);
+        }
+        List<Long> sameTeamUsers = userRepository.findUserByTeamId(adminUser.getTeam().getId())
+                .stream().map(User::getUserId).collect(Collectors.toList());
+        User searchedUser = userRepository.findByUserId(searchId);
+        if (sameTeamUsers.contains(searchId)) {
+            return AdminSearchUserIdResponseDto.builder().name(searchedUser.getUserName()).nickname(searchedUser.getNickname()).build();
+        } else throw new CustomException(CustomError.NOT_THE_SAME_TEAM);
     }
 }
