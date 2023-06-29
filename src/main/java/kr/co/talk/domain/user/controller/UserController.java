@@ -1,6 +1,7 @@
 package kr.co.talk.domain.user.controller;
 
 import kr.co.talk.domain.user.dto.*;
+import kr.co.talk.domain.user.dto.ResponseDto.AdminSearchUserIdResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
@@ -177,5 +178,10 @@ public class UserController {
     @GetMapping("/team/profile-code/{teamCode}")
     public List<String> teamProfileCode(@PathVariable String teamCode) {
         return userService.profileCodes(teamCode);
+    }
+
+    @GetMapping("/admin/search/{searchId}")
+    public AdminSearchUserIdResponseDto adminSearchUser(@RequestHeader(value = "userId") long userId, @PathVariable long searchId) {
+        return userService.adminSearchUserId(userId, searchId);
     }
 }
