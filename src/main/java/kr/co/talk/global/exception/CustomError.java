@@ -20,8 +20,8 @@ public enum CustomError {
     USER_ALREADY_EXISTS(1034, "가입한 이력이 있습니다.", HttpStatus.FORBIDDEN.value()),
     USER_DOES_NOT_EXIST(1035, "해당 사용자가 존재하지 않습니다.", HttpStatus.NOT_FOUND.value()),
     TOKEN_DOES_NOT_MATCH(1036, "사용자 아이디와 인증 토큰이 매치하지 않습니다.", HttpStatus.UNAUTHORIZED.value()),
-    IS_NOT_ADMIN(1037, "관리자 회원만 조회 가능합니다.", HttpStatus.UNAUTHORIZED.value()),
-    NOT_THE_SAME_TEAM(1038, "소속 팀이 아닙니다.", HttpStatus.UNAUTHORIZED.value()),
+    IS_NOT_ADMIN(1040, "관리자 회원만 조회 가능합니다.", HttpStatus.UNAUTHORIZED.value()),
+    NOT_THE_SAME_TEAM(1041, "소속 팀이 아닙니다.", HttpStatus.UNAUTHORIZED.value()),
 
     NAMECODE_SIZE_NOT_3(1037, "Namecode size must be equal to 3", HttpStatus.BAD_REQUEST.value()),
     NAMECODE_NOT_FOUND(1038, "등록되지 않은 코드입니다", HttpStatus.BAD_REQUEST.value()),
