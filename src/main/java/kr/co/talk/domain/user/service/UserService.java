@@ -8,10 +8,6 @@ import kr.co.talk.domain.user.dto.ResponseDto.*;
 import kr.co.talk.domain.user.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
-import kr.co.talk.domain.user.dto.RegisterUserDto;
-import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.model.Team;
 import kr.co.talk.domain.user.model.User;
@@ -314,6 +310,20 @@ public class UserService {
                                 .profileUrl(NicknameService.generateProfileUrl(dto.getProfileImgCode()))
                                 .build())
                         .collect(Collectors.toList());
+    }
+    
+    public UserInfoDto getUserInfo(long userId) {
+        EnterUserQueryDto userInfo = customUserRepository.getUserInfo(userId);
+        if(userInfo == null) {
+            throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
+        }
+        
+        return UserInfoDto.builder()
+                .userId(userInfo.getUserId())
+                .userName(userInfo.getName())
+                .nickname(userInfo.getNickname())
+                .profileUrl(NicknameService.generateProfileUrl(userInfo.getProfileImgCode()))
+                .build();
     }
     
     

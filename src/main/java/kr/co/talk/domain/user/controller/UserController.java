@@ -4,6 +4,7 @@ import kr.co.talk.domain.user.dto.*;
 import kr.co.talk.domain.user.dto.ResponseDto.AdminSearchUserIdResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.ChatRoomEnterResponseDto;
 import kr.co.talk.domain.user.dto.ResponseDto.TeamCodeResponseDto;
+import kr.co.talk.domain.user.dto.ResponseDto.UserInfoDto;
 import kr.co.talk.domain.user.dto.ResponseDto.UserNameResponseDto;
 import kr.co.talk.domain.user.service.NicknameService;
 import kr.co.talk.domain.user.service.ProfileService;
@@ -147,6 +148,11 @@ public class UserController {
         return userService.requiredEnterInfo(userList);
     }
 
+    @GetMapping("/userInfo/{userId}")
+    public UserInfoDto getUserInfo(@PathVariable("userId") Long userId) {
+        return userService.getUserInfo(userId);
+    }
+    
     @GetMapping("/img-code")
     public String findEnterInfo(@RequestHeader(value = "userId") long userId) {
         return userService.sendUserImgCode(userId);

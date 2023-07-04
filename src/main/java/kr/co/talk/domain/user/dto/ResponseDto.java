@@ -85,5 +85,16 @@ public class ResponseDto {
         String name;
         String nickname;
     }
-
+    
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserInfoDto {
+        private Long userId;
+        private String teamCode;
+        private String nickname;
+        private String userName;
+        private String profileUrl;
+    }
 }

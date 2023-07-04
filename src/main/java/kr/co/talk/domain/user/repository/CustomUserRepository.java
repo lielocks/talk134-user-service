@@ -47,4 +47,16 @@ public class CustomUserRepository {
                 .where(user.userId.in(userList))
                 .fetch();
     }
+    
+    public EnterUserQueryDto getUserInfo(long userId) {
+        return queryFactory
+                .select(new QEnterUserQueryDto(
+                        user.userId,
+                        user.userName,
+                        user.nickname,
+                        user.profileImgCode))
+                .from(user)
+                .where(user.userId.eq(userId))
+                .fetchFirst();
+    }
 }
