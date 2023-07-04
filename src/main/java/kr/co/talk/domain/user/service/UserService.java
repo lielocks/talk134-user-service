@@ -313,17 +313,14 @@ public class UserService {
     }
     
     public UserInfoDto getUserInfo(long userId) {
-        EnterUserQueryDto userInfo = customUserRepository.getUserInfo(userId);
+        UserInfoDto userInfo = customUserRepository.getUserInfo(userId);
         if(userInfo == null) {
             throw new CustomException(CustomError.USER_DOES_NOT_EXIST);
         }
         
-        return UserInfoDto.builder()
-                .userId(userInfo.getUserId())
-                .userName(userInfo.getName())
-                .nickname(userInfo.getNickname())
-                .profileUrl(NicknameService.generateProfileUrl(userInfo.getProfileImgCode()))
-                .build();
+        userInfo.setProfileUrl(NicknameService.generateProfileUrl(userInfo.getProfileImgCode()));
+        
+        return userInfo;
     }
     
     

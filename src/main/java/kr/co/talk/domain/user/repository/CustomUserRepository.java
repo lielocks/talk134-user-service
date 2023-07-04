@@ -1,10 +1,12 @@
 package kr.co.talk.domain.user.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.talk.domain.user.dto.EnterUserQueryDto;
 import kr.co.talk.domain.user.dto.QEnterUserQueryDto;
 import kr.co.talk.domain.user.dto.QTeammateQueryDto;
+import kr.co.talk.domain.user.dto.ResponseDto.UserInfoDto;
 import kr.co.talk.domain.user.dto.TeammateQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -48,10 +50,11 @@ public class CustomUserRepository {
                 .fetch();
     }
     
-    public EnterUserQueryDto getUserInfo(long userId) {
+    public UserInfoDto getUserInfo(long userId) {
         return queryFactory
-                .select(new QEnterUserQueryDto(
-                        user.userId,
+                .select(Projections.bean(UserInfoDto.class,
+                        user.userId, 
+                        user.team.teamCode,
                         user.userName,
                         user.nickname,
                         user.profileImgCode))

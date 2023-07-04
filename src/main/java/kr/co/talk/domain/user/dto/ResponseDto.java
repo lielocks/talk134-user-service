@@ -96,5 +96,6 @@ public class ResponseDto {
         private String nickname;
         private String userName;
         private String profileUrl;
+        private String profileImgCode;
     }
 }
