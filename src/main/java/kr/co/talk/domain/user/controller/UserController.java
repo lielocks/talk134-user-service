@@ -181,7 +181,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/search/{searchId}")
-    public AdminSearchUserIdResponseDto adminSearchUser(@RequestHeader(value = "userId") long userId, @PathVariable long searchId) {
+    public AdminSearchUserIdResponseDto adminSearchUser(@RequestHeader(value = "userId") long userId, @PathVariable(name = "searchId") long searchId) {
         return userService.adminSearchUserId(userId, searchId);
     }
 }

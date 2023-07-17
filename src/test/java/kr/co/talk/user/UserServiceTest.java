@@ -1,10 +1,7 @@
 package kr.co.talk.user;
 
-import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
 import kr.co.talk.domain.user.dto.RegisterUserDto;
-import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.model.User;
-import kr.co.talk.domain.user.repository.TeamRepository;
 import kr.co.talk.domain.user.repository.UserRepository;
 import kr.co.talk.domain.user.service.SocialKakaoService;
 import kr.co.talk.domain.user.service.UserService;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static kr.co.talk.domain.user.model.User.Role.ROLE_ADMIN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,10 +26,8 @@ class UserServiceTest {
     UserRepository userRepository;
 
     @Autowired
-    TeamRepository teamRepository;
-
-    @Autowired
     UserService userService;
+
     @Autowired
     SocialKakaoService socialKakaoService;
 
@@ -39,28 +35,19 @@ class UserServiceTest {
     JwtTokenProvider jwtTokenProvider;
 
     @Test
-    @DisplayName("이미 ROLE_ADMIN으로 가입한 사용자는 ROLE_USER로 가입할 수 없음")
-    void user_role_register() throws Exception {
+    @DisplayName("이미 ROLE_ADMIN 으로 가입한 사용자는 ROLE_USER 로 가입할 수 없음")
+    void user_role_register() {
         //given
-        User adminUser = User.builder().userId(1L).userName("testName").userUid("abcdefi").nickname("nickName").build();
-        User user = User.builder().userName("testName").userUid("abcdefi").nickname("nickName").build();
+        User adminUser = userRepository.findByUserId(101L);
+        assertEquals(adminUser.getRole(), ROLE_ADMIN);
 
-        RegisterAdminUserDto registerAdminUserDto = new RegisterAdminUserDto();
-        registerAdminUserDto.setName(adminUser.getUserName());
-        registerAdminUserDto.setTeamName("talk");
-        ResponseDto.TeamCodeResponseDto teamCodeResponseDto = userService.registerAdminUser(registerAdminUserDto, 1L);
-
-        RegisterUserDto registerUserDto = new RegisterUserDto();
-        registerUserDto.setName(user.getUserName());
-        registerUserDto.setTeamCode(teamCodeResponseDto.getTeamCode());
-        userService.registerUser(registerUserDto, 1L);
-
-        //when
-        Throwable exception = assertThrows(CustomException.class, () -> {
-            userService.registerUser(registerUserDto, 1L);
-        });
+        // when
+        RegisterUserDto registerUserDto = RegisterUserDto.builder().name(adminUser.getUserName()).teamCode(adminUser.getTeam().getTeamCode()).build();
 
         // then
-        assertEquals(CustomError.ADMIN_CANNOT_REGISTER_USER, ((CustomException) exception).getCustomError());
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            userService.registerUser(registerUserDto, 101L);
+        });
+        assertEquals(exception.getCustomError(), CustomError.ADMIN_CANNOT_REGISTER_USER);
     }
 }
