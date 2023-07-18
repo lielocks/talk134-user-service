@@ -162,7 +162,6 @@ public class UserService {
             throw new CustomException(CustomError.TEAM_CODE_NOT_FOUND);
         }
         log.info("TEAM = {}", team.getTeamName());
-        log.info("TEAM = {}", team.getTeamCode());
 
         User user = userRepository.findByUserId(userId);
 
@@ -402,6 +401,7 @@ public class UserService {
         } if (!adminUser.getRole().equals(ROLE_ADMIN)) {
             throw new CustomException(CustomError.IS_NOT_ADMIN);
         }
+
         List<Long> sameTeamUsers = userRepository.findUserByTeamId(adminUser.getTeam().getId())
                 .stream().map(User::getUserId).collect(Collectors.toList());
         User searchedUser = userRepository.findByUserId(searchId);

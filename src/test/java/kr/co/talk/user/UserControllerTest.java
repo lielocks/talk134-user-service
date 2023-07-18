@@ -37,16 +37,15 @@ public class UserControllerTest {
         //given
         User user = User.builder().userId(1L).userUid("test").userName("testName").nickname("nickname").role(User.Role.ROLE_ADMIN).build();
 
-        RegisterAdminUserDto adminUserDto = new RegisterAdminUserDto();
-        adminUserDto.setTeamName("talk");
-        adminUserDto.setName(user.getUserName());
+        RegisterAdminUserDto adminUserDto = RegisterAdminUserDto.builder().teamName("talk").name(user.getUserName()).build();
 
         ResponseDto.TeamCodeResponseDto teamCodeResponseDto = new ResponseDto.TeamCodeResponseDto();
         teamCodeResponseDto.setTeamCode("talk");
+
+        //when
         given(userService.registerAdminUser(adminUserDto, 1L))
                 .willReturn(teamCodeResponseDto);
 
-        //when
         //then
         String content = objectMapper.writeValueAsString(adminUserDto);
         mockMvc.perform(post("/user/admin/register")
@@ -58,7 +57,6 @@ public class UserControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.teamCode").value("talk"));
-
     }
 
 }
