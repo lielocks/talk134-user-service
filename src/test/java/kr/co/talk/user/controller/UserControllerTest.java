@@ -1,11 +1,14 @@
-package kr.co.talk.user;
+package kr.co.talk.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.talk.domain.user.controller.UserController;
 import kr.co.talk.domain.user.dto.RegisterAdminUserDto;
 import kr.co.talk.domain.user.dto.ResponseDto;
 import kr.co.talk.domain.user.model.User;
+import kr.co.talk.domain.user.service.NicknameService;
+import kr.co.talk.domain.user.service.ProfileService;
 import kr.co.talk.domain.user.service.UserService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,7 +34,14 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private NicknameService nicknameService;
+
+    @MockBean
+    private ProfileService profileService;
+
     @Test
+    @DisplayName("admin 회원 register 및 header 에 userId 포함하여 반환")
     @WithMockUser
     void admin_user_register() throws Exception {
         //given

@@ -1,0 +1,38 @@
+server:
+  port: 0 # 랜덤하게 지정
+  ssl:
+    enabled: false
+spring:
+  application:
+    name: user-service
+  redis:
+    host: localhost
+    port: 16378
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:userdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+eureka:
+  client:
+    enabled: false
+
+jwt:
+  accessToken:
+    secretKey: ${134_JWT_ACCESS}
+  refreshToken:
+    secretKey: ${134_JWT_REFRESH}
+
+kakao:
+  url:
+    token: ${134_KAKAO_TOKEN}
+    profile: ${134_KAKAO_PROFILE}
+    clientId : ${134_KAKAO_CLIENT}
+    redirectUrl : ${134_KAKAO_REDIRECT}
