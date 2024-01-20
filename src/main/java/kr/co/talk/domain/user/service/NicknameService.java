@@ -3,7 +3,7 @@ package kr.co.talk.domain.user.service;
 import kr.co.talk.domain.user.dto.NicknameMapQueryDto;
 import kr.co.talk.domain.user.dto.NicknameResponseDto;
 import kr.co.talk.domain.user.model.User;
-import kr.co.talk.domain.user.repository.NicknameMapRepository;
+import kr.co.talk.domain.user.repository.CustomNicknameMapRepository;
 import kr.co.talk.domain.user.repository.UserRepository;
 import kr.co.talk.global.exception.CustomError;
 import kr.co.talk.global.exception.CustomException;
@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 public class NicknameService {
     private final UserRepository userRepository;
-    private final NicknameMapRepository nicknameMapRepository;
+    private final CustomNicknameMapRepository customNicknameMapRepository;
 
     @Transactional(rollbackFor = Exception.class)
     public NicknameResponseDto getNicknameAndSave(Long userId, List<Integer> nameCode) {
-        var nicknameMap = nicknameMapRepository.getNicknameMap(nameCode);
+        var nicknameMap = customNicknameMapRepository.getNicknameMap(nameCode);
 
         String nickname = generateNickname(nicknameMap);
         String profileImgCode = generateProfileImgCode(nicknameMap);

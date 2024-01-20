@@ -17,7 +17,7 @@ spring:
       ddl-auto: create-drop
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:userdb;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:userdb;DB_CLOSE_DELAY=-1;MODE=MYSQL
     username: sa
     password:
 eureka:
@@ -36,3 +36,4 @@ kakao:
     profile: ${134_KAKAO_PROFILE}
     clientId : ${134_KAKAO_CLIENT}
     redirectUrl : ${134_KAKAO_REDIRECT}
+    clientSecret : ${134_KAKAO_CSECRET}
